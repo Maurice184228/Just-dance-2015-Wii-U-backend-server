@@ -286,13 +286,26 @@ async def catch_all(path: str, request: Request):
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
+    import ssl
     import uvicorn
+
+    tls_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+
+    tls_context.minimum_version = ssl.TLSVersion.TLSv1_2
+    tls_context.maximum_version = ssl.TLSVersion.TLSv1_2
+
+    tls_context.load_cert_chain(
+        certfile="config/tls/api-ubiservices.crt",
+        keyfile="config/tls/api-ubiservices.key",
+    )
+
+    def make_ssl_context(config, default_factory):
+        return tls_context
 
     uvicorn.run(
         "src.server:app",
         host="0.0.0.0",
         port=443,
-        ssl_keyfile="config/tls/api-ubiservices.key",
-        ssl_certfile="config/tls/api-ubiservices.crt",
         reload=False,
+        ssl_context_factory=make_ssl_context,
     )
