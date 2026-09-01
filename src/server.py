@@ -2,7 +2,7 @@ from __future__ import annotations
 
 
 from typing import Any
-
+from uuid import uuid4
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
@@ -139,50 +139,59 @@ async def application_configuration(
 # UbiServices: profile session creation
 # ---------------------------------------------------------------------------
 
-@app.post("/v1/profiles/sessions")
+# ---------------------------------------------------------------------------
+# UbiServices: profile session creation
+# ---------------------------------------------------------------------------
+
+@app.post("/v2/profiles/sessions")
 async def create_profile_session(request: Request):
     body = await request.body()
     log_request(request, body)
 
-    print("[UbiServices] CreateSession request body:")
-    print(body.decode("utf-8", errors="replace"))
+    try:
+        data: dict[str, Any] = await request.json()
+    except Exception:
+        return json_error(
+            "Invalid JSON body",
+            status_code=400,
+        )
 
-    return JSONResponse(
-        {
-            "status": "received",
-            "service": "CreateSession",
-        }
-    )
+    genome_id = data.get("genomeId")
+    name_on_platform = data.get("nameOnPlatform")
+    id_on_platform = data.get("idOnPlatform")
 
-    # We are intentionally not pretending that we know the production
-    # CreateSession JSON yet.
-    #
-    # For now we create an internal development session so that the server has
-    # the same conceptual state that the RPX's UbiServices SDK expects.
+    if not genome_id or not name_on_platform or not id_on_platform:
+        return json_error(
+            "Missing CreateSession fields",
+            status_code=400,
+        )
 
+    print("[JobCreateSession]")
+    print(f"  genomeId       : {genome_id}")
+    print(f"  nameOnPlatform : {name_on_platform}")
+    print(f"  idOnPlatform   : {id_on_platform}")
+
+    session_id = str(uuid4())
     profile_id = str(uuid4())
+    user_id = str(uuid4())
 
-    session = sessions.create(
-        profile_id=profile_id,
-        space_id=SPACE_ID,
-        environment=ENVIRONMENT,
-        platform_type="WiiU",
-    )
+    response = {
+        "sessionId": session_id,
+        "profileId": profile_id,
+        "userId": user_id,
+        "productId": "BJDE41",
+        "spaceId": SPACE_ID,
+        "environment": ENVIRONMENT,
+        "nameOnPlatform": name_on_platform,
+        "platformType": "WiiU",
+        "accountIssues": [],
+        "hasAcceptedLegalOptins": True,
+    }
 
-    print("[UbiServices] Created development session:")
-    print(asdict(session))
+    print("[JobCreateSession] Returning development SessionInfo:")
+    print(response)
 
-    # Placeholder response. The exact Ubisoft wire format still needs to be
-    # recovered from the RPX/runtime behavior.
-    return JSONResponse(
-        {
-            "sessionId": session.session_id,
-            "profileId": session.profile_id,
-            "spaceId": session.space_id,
-            "environment": session.environment,
-            "platformType": session.platform_type,
-        }
-    )
+    return JSONResponse(response)
 
 
 # ---------------------------------------------------------------------------
@@ -200,13 +209,12 @@ async def profile_session(
     body = await request.body()
     log_request(request, body)
 
-    session = sessions.get(session_id)
+    print(f"[UbiServices] Session lookup requested: {session_id}")
 
-    if session is None:
-        return json_error(
-            "Unknown JD2015 session",
-            status_code=404,
-        )
+    return json_error(
+        "Session lookup not implemented yet",
+        status_code=501,
+    )
 
     # Extend the session conceptually. We will implement Ubisoft's exact
     # session-extension semantics later.
