@@ -8,8 +8,16 @@ PACKETS = {
         "afa14000000000000000000000000097"
     ),
 
+    594: bytes.fromhex(
+    "a1af900000000000000000a00432db000099"
+),
+
     595: bytes.fromhex(
         "afa161007aa00432db0100a439da34d2"
+    ),
+
+    597: bytes.fromhex(
+        "a1af91007aa439da34010000000000000050"
     ),
 
     600: bytes.fromhex(
