@@ -1,55 +1,80 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
-class PRUDPFrame:
+class PRUDPv0Packet:
     raw: bytes
 
-    marker: bytes
-    message_type: int
+    source: int
+    destination: int
+    packet_type: int
     flags: int
-    session_byte: Optional[int]
+    session_id: int
+    signature: bytes
+    sequence_id: int
+    payload: bytes
+    checksum: int
 
     def describe(self) -> str:
         return (
-            f"PRUDPFrame("
-            f"marker={self.marker.hex()}, "
-            f"type=0x{self.message_type:02x}, "
+            "PRUDPv0Packet("
+            f"source=0x{self.source:02x}, "
+            f"destination=0x{self.destination:02x}, "
+            f"type=0x{self.packet_type:02x}, "
             f"flags=0x{self.flags:02x}, "
-            f"session_byte={self.session_byte!r}, "
-            f"length={len(self.raw)}"
-            f")"
+            f"session_id=0x{self.session_id:02x}, "
+            f"sequence_id={self.sequence_id}, "
+            f"payload_length={len(self.payload)}, "
+            f"checksum=0x{self.checksum:02x}"
+            ")"
         )
 
 
-def parse_frame(data: bytes) -> PRUDPFrame:
-    if len(data) < 4:
-        raise ValueError("Packet too short to contain PRUDP framing")
+def parse_v0(data: bytes) -> PRUDPv0Packet:
+    if len(data) < 12:
+        raise ValueError("PRUDPv0 packet is too short")
 
-    marker = data[:2]
+    source = data[0]
+    destination = data[1]
 
-    # We currently observe:
-    #   af a1  -> Wii U side
-    #   a1 af  -> remote side
-    #
-    # Treat this as an observed framing marker for now.
-    if marker not in (b"\xaf\xa1", b"\xa1\xaf"):
+    if (source, destination) not in (
+        (0xAF, 0xA1),
+        (0xA1, 0xAF),
+    ):
         raise ValueError(
-            f"Unknown packet marker: {marker.hex()}"
+            f"Unexpected PRUDPv0 direction: "
+            f"{source:02x} {destination:02x}"
         )
 
-    message_type = data[2]
-    flags = data[3]
+    type_flags = int.from_bytes(data[2:4], "little")
 
-    session_byte = data[4] if len(data) >= 5 else None
+    packet_type = type_flags & 0x0F
+    flags = (type_flags >> 4) & 0x0FFF
 
-    return PRUDPFrame(
+    session_id = data[4]
+
+    signature = data[5:9]
+
+    sequence_id = int.from_bytes(
+        data[9:11],
+        "little",
+    )
+
+    checksum = data[-1]
+
+    payload = data[11:-1]
+
+    return PRUDPv0Packet(
         raw=data,
-        marker=marker,
-        message_type=message_type,
+        source=source,
+        destination=destination,
+        packet_type=packet_type,
         flags=flags,
-        session_byte=session_byte,
+        session_id=session_id,
+        signature=signature,
+        sequence_id=sequence_id,
+        payload=payload,
+        checksum=checksum,
     )
