@@ -1393,3 +1393,15 @@ Headers:
   accept: */*
 Body:
 <empty>
+
+======================================================================
+Timestamp: 2026-09-01T17:08:03.250243+00:00
+Method: POST
+Path: /v2/connections
+Query: 
+Headers:
+  host: 127.0.0.1
+  user-agent: curl/8.7.1
+  accept: */*
+Body:
+<empty>
