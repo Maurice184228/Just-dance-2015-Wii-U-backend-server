@@ -1,0 +1,22 @@
+[req]
+default_bits = 2048
+prompt = no
+default_md = sha256
+distinguished_name = req_distinguished_name
+x509_extensions = v3_req
+
+[req_distinguished_name]
+C = CA
+ST = Ontario
+L = Toronto
+O = Just Dance 2015 Backend
+OU = Development
+CN = api-ubiservices.ubi.com
+
+[v3_req]
+subjectAltName = @alt_names
+keyUsage = digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+
+[alt_names]
+DNS.1 = api-ubiservices.ubi.com

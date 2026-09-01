@@ -11,6 +11,42 @@ from src.ubiservices.configuration import build_configuration
 from src.ubiservices.models import SessionInfo
 from src.ubiservices.sessions import SessionStore
 
+from pathlib import Path
+from datetime import datetime, timezone
+
+
+PROJECT_DIR = Path(__file__).resolve().parent.parent
+
+LOG_DIR = PROJECT_DIR / "logs"
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+
+REQUEST_LOG = LOG_DIR / "ubiservices_requests.log"
+
+
+def save_request_log(
+    request: Request,
+    body: bytes,
+) -> None:
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    with REQUEST_LOG.open("a", encoding="utf-8") as f:
+        f.write("\n" + "=" * 70 + "\n")
+        f.write(f"Timestamp: {timestamp}\n")
+        f.write(f"Method: {request.method}\n")
+        f.write(f"Path: {request.url.path}\n")
+        f.write(f"Query: {request.url.query}\n")
+        f.write("Headers:\n")
+
+        for name, value in request.headers.items():
+            f.write(f"  {name}: {value}\n")
+
+        f.write("Body:\n")
+        if body:
+            f.write(body[:16384].decode("utf-8", errors="replace"))
+            f.write("\n")
+        else:
+            f.write("<empty>\n")
+
 
 app = FastAPI(title="Just Dance 2015 Wii U Backend")
 
@@ -40,6 +76,8 @@ def log_request(
     request: Request,
     body: bytes,
 ) -> None:
+    save_request_log(request, body)
+
     print("\n==============================")
     print("JD2015 / UbiServices REQUEST")
     print("==============================")

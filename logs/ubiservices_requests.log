@@ -1,0 +1,12 @@
+
+======================================================================
+Timestamp: 2026-09-01T01:32:02.116126+00:00
+Method: GET
+Path: /test
+Query: 
+Headers:
+  host: 127.0.0.1:8080
+  user-agent: curl/8.7.1
+  accept: */*
+Body:
+<empty>
