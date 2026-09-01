@@ -9,10 +9,9 @@ class PRUDPv0Packet:
 
     source: int
     destination: int
-    packet_type: int
-    flags: int
+    operation: int
     session_id: int
-    signature: bytes
+    packet_signature: bytes
     sequence_id: int
     payload: bytes
     checksum: int
@@ -22,9 +21,9 @@ class PRUDPv0Packet:
             "PRUDPv0Packet("
             f"source=0x{self.source:02x}, "
             f"destination=0x{self.destination:02x}, "
-            f"type=0x{self.packet_type:02x}, "
-            f"flags=0x{self.flags:02x}, "
+            f"operation=0x{self.operation:04x}, "
             f"session_id=0x{self.session_id:02x}, "
+            f"packet_signature={self.packet_signature.hex()}, "
             f"sequence_id={self.sequence_id}, "
             f"payload_length={len(self.payload)}, "
             f"checksum=0x{self.checksum:02x}"
@@ -44,22 +43,22 @@ def parse_v0(data: bytes) -> PRUDPv0Packet:
         (0xA1, 0xAF),
     ):
         raise ValueError(
-            f"Unexpected PRUDPv0 direction: "
+            f"Unexpected PRUDP direction: "
             f"{source:02x} {destination:02x}"
         )
 
-    type_flags = int.from_bytes(data[2:4], "little")
-
-    packet_type = type_flags & 0x0F
-    flags = (type_flags >> 4) & 0x0FFF
+    operation = int.from_bytes(
+        data[2:4],
+        byteorder="little",
+    )
 
     session_id = data[4]
 
-    signature = data[5:9]
+    packet_signature = data[5:9]
 
     sequence_id = int.from_bytes(
         data[9:11],
-        "little",
+        byteorder="little",
     )
 
     checksum = data[-1]
@@ -70,10 +69,9 @@ def parse_v0(data: bytes) -> PRUDPv0Packet:
         raw=data,
         source=source,
         destination=destination,
-        packet_type=packet_type,
-        flags=flags,
+        operation=operation,
         session_id=session_id,
-        signature=signature,
+        packet_signature=packet_signature,
         sequence_id=sequence_id,
         payload=payload,
         checksum=checksum,
