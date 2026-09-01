@@ -23,7 +23,8 @@ sessions = SessionStore()
 
 # We will fill these with the real JD2015 values once we recover them from
 # the RPX / traffic analysis.
-APP_ID = "UNKNOWN"
+
+APP_ID = "eb158139563c54df15d3ad895dd80355"
 APP_BUILD_ID = "UNKNOWN"
 ENVIRONMENT = "production"
 
