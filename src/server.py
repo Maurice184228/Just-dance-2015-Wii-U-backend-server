@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 from uuid import uuid4
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
 
 from src.ubiservices.configuration import build_configuration
@@ -329,16 +329,47 @@ async def catch_all(path: str, request: Request):
         },
         status_code=501,
     )
+    
+    # ---------------------------------------------------------------------------
+# Development WebSocket diagnostic endpoint
+
+@app.websocket("/{path:path}")
+async def websocket_diagnostic(websocket: WebSocket, path: str):
+    await websocket.accept()
+
+    print("\n==============================")
+    print("JD2015 / UbiServices WEBSOCKET")
+    print("==============================")
+    print(f"Path   : /{path}")
+    print("Headers:")
+
+    headers = dict(websocket.headers)
+
+    for name, value in headers.items():
+        print(f"  {name}: {value}")
+
+    print("==============================\n")
+    print("[WebSocket] Handshake accepted")
+
+    try:
+        while True:
+            message = await websocket.receive()
+
+            if message.get("text") is not None:
+                print("[WebSocket] TEXT:")
+                print(message["text"])
+
+            elif message.get("bytes") is not None:
+                print("[WebSocket] BINARY:")
+                print(message["bytes"].hex())
+
+            elif message.get("type") == "websocket.disconnect":
+                break
+
+    except WebSocketDisconnect:
+        print("[WebSocket] Client disconnected")
 
 # ---------------------------------------------------------------------------
-# Local development entry point
-
-
-if __name__ == "__main__":
-    import ssl
-    import uvicorn
-
-  # ---------------------------------------------------------------------------
 # Local development entry point
 
 if __name__ == "__main__":
