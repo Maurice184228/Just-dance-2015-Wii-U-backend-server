@@ -338,11 +338,22 @@ if __name__ == "__main__":
     import ssl
     import uvicorn
 
+  # ---------------------------------------------------------------------------
+# Local development entry point
+
+if __name__ == "__main__":
+    import ssl
+    import uvicorn
+
     tls_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+
+    tls_context.keylog_filename = str(
+        PROJECT_DIR / "captures" / "jd2015_python_tls.keys"
+    )
 
     tls_context.minimum_version = ssl.TLSVersion.TLSv1
     tls_context.maximum_version = ssl.TLSVersion.TLSv1_2
-    
+
     tls_context.set_ciphers("DEFAULT:@SECLEVEL=0")
 
     tls_context.load_cert_chain(
