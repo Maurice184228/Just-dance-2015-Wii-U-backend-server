@@ -50,6 +50,7 @@ app = FastAPI(title="Just Dance 2015 Wii U Backend")
 
 session_cache: dict[str, dict[str, Any]] = {}
 
+connection_cache: dict[str, dict[str, Any]] = {}
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -231,6 +232,34 @@ async def profile_session(
         status_code=404,
     )
 
+# ---------------------------------------------------------------------------
+# Development connection service
+
+@app.api_route(
+    "/v2/connections",
+    methods=["GET", "POST"],
+)
+async def connections(request: Request):
+    body = await request.body()
+    log_request(request, body)
+
+    print("[JobInitiateConnection] Connection request received")
+
+    connection_id = str(uuid4())
+
+    connection_cache[connection_id] = {
+        "connectionId": connection_id,
+        "status": "ready",
+        "environment": "Prod",
+        "platformType": "WiiU",
+    }
+
+    response = connection_cache[connection_id]
+
+    print("[JobInitiateConnection] Returning development connection:")
+    print(response)
+
+    return JSONResponse(response)
 
 # ---------------------------------------------------------------------------
 # UbiServices: diagnostic endpoints for related requests
@@ -272,7 +301,6 @@ async def policies(request: Request):
 # ---------------------------------------------------------------------------
 # Catch-all info
 
-
 @app.api_route(
     "/{path:path}",
     methods=[
@@ -289,13 +317,18 @@ async def catch_all(path: str, request: Request):
     body = await request.body()
     log_request(request, body)
 
-    return JSONResponse(
-        {
-            "status": "received",
-            "path": f"/{path}",
-        }
+    print(
+        f"[UbiServices] UNIMPLEMENTED ENDPOINT: "
+        f"{request.method} /{path}"
     )
 
+    return JSONResponse(
+        {
+            "status": "not_implemented",
+            "path": f"/{path}",
+        },
+        status_code=501,
+    )
 
 # ---------------------------------------------------------------------------
 # Local development entry point
