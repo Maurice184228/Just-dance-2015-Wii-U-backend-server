@@ -2,5 +2,6 @@
 
 A testing server to restore just dance 2015 online features on Wii U
 
-Currently under development and really early stages
+Currently under development and early stages
 
+About 10% progress is done.
