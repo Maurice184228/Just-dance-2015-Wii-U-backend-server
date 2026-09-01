@@ -103,8 +103,8 @@ def json_error(message: str, status_code: int = 400) -> JSONResponse:
     )
 
 
-# ---------------------------------------------------------------------------
-# UbiServices: application configuration
+# # ---------------------------------------------------------------------------
+# UbiServices: profile session creation
 
 
 @app.post("/v2/profiles/sessions")
@@ -163,6 +163,46 @@ async def create_profile_session(request: Request):
     return JSONResponse(response)
 
 # ---------------------------------------------------------------------------
+# UbiServices: application configuration
+
+@app.api_route(
+    "/applications/{application_id}/configuration",
+    methods=["GET", "POST"],
+)
+async def application_configuration(
+    application_id: str,
+    request: Request,
+):
+    body = await request.body()
+    log_request(request, body)
+
+    print(
+        f"[JobRequestConfig] Configuration requested for application: "
+        f"{application_id}"
+    )
+
+    response = {
+        "applicationId": application_id,
+        "applicationBuildId": APP_BUILD_ID,
+        "environment": "Prod",
+        "configuration": {},
+        "resources": {},
+        "sandboxes": {},
+        "uplayServices": {},
+        "sdkConfig": {},
+        "platformConfig": {
+            "platform": "WiiU",
+        },
+        "legacyUrls": {},
+        "featuresSwitches": {},
+    }
+
+    print("[JobRequestConfig] Returning development configuration:")
+    print(response)
+
+    return JSONResponse(response)
+
+# ---------------------------------------------------------------------------
 # UbiServices: session lookup / extension
 
 
@@ -177,22 +217,18 @@ async def profile_session(
     body = await request.body()
     log_request(request, body)
 
-    print(f"[UbiServices] Session lookup requested: {session_id}")
+    print(f"[JobLogin] Session lookup requested: {session_id}")
+
+    for session_data in session_cache.values():
+        if session_data.get("sessionId") == session_id:
+            print(f"[JobLogin] Session found: {session_id}")
+            return JSONResponse(session_data)
+
+    print(f"[JobLogin] Unknown session: {session_id}")
 
     return json_error(
-        "Session lookup not implemented yet",
-        status_code=501,
-    )
-
-    # Extend the session conceptually. Implementation of exact ubisoft session extension later.
-    return JSONResponse(
-        {
-            "sessionId": session.session_id,
-            "profileId": session.profile_id,
-            "spaceId": session.space_id,
-            "environment": session.environment,
-            "platformType": session.platform_type,
-        }
+        "Unknown JD2015 session",
+        status_code=404,
     )
 
 
