@@ -161,16 +161,26 @@ async def create_profile_session(request: Request):
     auth_key = request.headers.get("authorization", "")
 
     if auth_key not in session_cache:
+        now = int(datetime.now(timezone.utc).timestamp())
+
         session_cache[auth_key] = {
-            "sessionId": str(uuid4()),
-            "profileId": str(uuid4()),
-            "userId": str(uuid4()),
-            "productId": "BJDE41",
-            "spaceId": SPACE_ID,
-            "environment": ENVIRONMENT,
-            "nameOnPlatform": name_on_platform,
-            "platformType": "WiiU",
-        }
+        "sessionId": str(uuid4()),
+        "profileId": str(uuid4()),
+        "userId": str(uuid4()),
+        "productId": "BJDE41",
+        "spaceId": SPACE_ID,
+        "environment": ENVIRONMENT,
+        "token": "",
+        "ticket": "",
+        "accountIssues": [],
+        "nameOnPlatform": name_on_platform,
+        "hasAcceptedLegalOptins": True,
+        "expiration": now + 86400,
+        "serverTime": now,
+        "clientIp": request.client.host if request.client else None,
+        "initializeUser": True,
+        "platformType": "WiiU",
+    }
 
     session_data = session_cache[auth_key]
 
