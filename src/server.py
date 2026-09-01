@@ -291,6 +291,8 @@ if __name__ == "__main__":
     uvicorn.run(
         "src.server:app",
         host="0.0.0.0",
-        port=8080,
+        port=443,
+        ssl_keyfile="config/tls/api-ubiservices.key",
+        ssl_certfile="config/tls/api-ubiservices.crt",
         reload=False,
     )
