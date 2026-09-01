@@ -160,10 +160,10 @@ async def create_profile_session(request: Request):
 
     auth_key = request.headers.get("authorization", "")
 
-    if auth_key not in session_cache:
-        now = int(datetime.now(timezone.utc).timestamp())
+    now = int(datetime.now(timezone.utc).timestamp())
 
-    session_cache[auth_key] = {
+    if auth_key not in session_cache:
+        session_cache[auth_key] = {
         "sessionId": str(uuid4()),
         "profileId": str(uuid4()),
         "userId": str(uuid4()),
@@ -181,7 +181,6 @@ async def create_profile_session(request: Request):
         "initializeUser": True,
         "platformType": "WiiU",
     }
-
     session_data = session_cache[auth_key]
 
     session_id = session_data["sessionId"]
