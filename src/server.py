@@ -48,6 +48,8 @@ def save_request_log(
 
 app = FastAPI(title="Just Dance 2015 Wii U Backend")
 
+session_cache: dict[str, dict[str, Any]] = {}
+
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -139,10 +141,6 @@ async def application_configuration(
 # UbiServices: profile session creation
 # ---------------------------------------------------------------------------
 
-# ---------------------------------------------------------------------------
-# UbiServices: profile session creation
-# ---------------------------------------------------------------------------
-
 @app.post("/v2/profiles/sessions")
 async def create_profile_session(request: Request):
     body = await request.body()
@@ -151,29 +149,39 @@ async def create_profile_session(request: Request):
     try:
         data: dict[str, Any] = await request.json()
     except Exception:
-        return json_error(
-            "Invalid JSON body",
-            status_code=400,
-        )
+        return json_error("Invalid JSON body", 400)
 
     genome_id = data.get("genomeId")
     name_on_platform = data.get("nameOnPlatform")
     id_on_platform = data.get("idOnPlatform")
 
     if not genome_id or not name_on_platform or not id_on_platform:
-        return json_error(
-            "Missing CreateSession fields",
-            status_code=400,
-        )
+        return json_error("Missing CreateSession fields", 400)
+
+    auth_key = request.headers.get("authorization", "")
+
+    if auth_key not in session_cache:
+        session_cache[auth_key] = {
+            "sessionId": str(uuid4()),
+            "profileId": str(uuid4()),
+            "userId": str(uuid4()),
+            "productId": "BJDE41",
+            "spaceId": SPACE_ID,
+            "environment": ENVIRONMENT,
+            "nameOnPlatform": name_on_platform,
+            "platformType": "WiiU",
+        }
+
+    session_data = session_cache[auth_key]
+
+    session_id = session_data["sessionId"]
+    profile_id = session_data["profileId"]
+    user_id = session_data["userId"]
 
     print("[JobCreateSession]")
     print(f"  genomeId       : {genome_id}")
     print(f"  nameOnPlatform : {name_on_platform}")
     print(f"  idOnPlatform   : {id_on_platform}")
-
-    session_id = str(uuid4())
-    profile_id = str(uuid4())
-    user_id = str(uuid4())
 
     response = {
         "sessionId": session_id,
@@ -182,17 +190,26 @@ async def create_profile_session(request: Request):
         "productId": "BJDE41",
         "spaceId": SPACE_ID,
         "environment": ENVIRONMENT,
-        "nameOnPlatform": name_on_platform,
-        "platformType": "WiiU",
+
+        "token": f"dev-token-{session_id}",
+        "ticket": f"dev-ticket-{session_id}",
+
         "accountIssues": [],
+        "nameOnPlatform": name_on_platform,
         "hasAcceptedLegalOptins": True,
+
+        "expiration": int(datetime.now(timezone.utc).timestamp()) + 86400,
+        "serverTime": int(datetime.now(timezone.utc).timestamp()),
+
+        "clientIp": request.client.host if request.client else None,
+        "initializeUser": True,
+        "platformType": "WiiU",
     }
 
     print("[JobCreateSession] Returning development SessionInfo:")
     print(response)
 
     return JSONResponse(response)
-
 
 # ---------------------------------------------------------------------------
 # UbiServices: session lookup / extension
