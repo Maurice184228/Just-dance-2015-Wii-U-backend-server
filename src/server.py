@@ -10,7 +10,7 @@ from src.ubiservices.configuration import build_configuration
 
 
 from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
@@ -53,22 +53,20 @@ session_cache: dict[str, dict[str, Any]] = {}
 
 # ---------------------------------------------------------------------------
 # Configuration
-# ---------------------------------------------------------------------------
 
-# We will fill these with the real JD2015 values once we recover them from
-# the RPX / traffic analysis.
+# JD 2015 values and ID'S from the rpx file
 
 APP_ID = "3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b"
 APP_BUILD_ID = "JD2015WIIU_E163180"
 ENVIRONMENT = "production"
 
-# Used only by our development backend for now.
+# Used for the backend development.
 SPACE_ID = "jd2015"
 
 
 # ---------------------------------------------------------------------------
 # Debug logging
-# ---------------------------------------------------------------------------
+
 
 def log_request(
     request: Request,
@@ -107,39 +105,7 @@ def json_error(message: str, status_code: int = 400) -> JSONResponse:
 
 # ---------------------------------------------------------------------------
 # UbiServices: application configuration
-# ---------------------------------------------------------------------------
 
-@app.api_route(
-    "/applications/{application_id}/configuration",
-    methods=["GET", "POST"],
-)
-async def application_configuration(
-    application_id: str,
-    request: Request,
-):
-    body = await request.body()
-    log_request(request, body)
-
-    print(f"[UbiServices] Configuration requested for application: {application_id}")
-
-    # Keep the real application ID supplied by the client in the response for
-    # now. We will replace the empty configuration with recovered JD2015 data.
-    response = build_configuration(application_id)
-
-    response.update(
-        {
-            "applicationId": application_id,
-            "applicationBuildId": APP_BUILD_ID,
-            "environment": ENVIRONMENT,
-        }
-    )
-
-    return JSONResponse(response)
-
-
-# ---------------------------------------------------------------------------
-# UbiServices: profile session creation
-# ---------------------------------------------------------------------------
 
 @app.post("/v2/profiles/sessions")
 async def create_profile_session(request: Request):
@@ -160,60 +126,36 @@ async def create_profile_session(request: Request):
 
     auth_key = request.headers.get("authorization", "")
 
-    now = int(datetime.now(timezone.utc).timestamp())
+    now_dt = datetime.now(timezone.utc)
 
     if auth_key not in session_cache:
-        session_cache[auth_key] = {
-        "sessionId": str(uuid4()),
-        "profileId": str(uuid4()),
-        "userId": str(uuid4()),
-        "productId": "BJDE41",
-        "spaceId": SPACE_ID,
-        "environment": ENVIRONMENT,
-        "token": "",
-        "ticket": "",
-        "accountIssues": [],
-        "nameOnPlatform": name_on_platform,
-        "hasAcceptedLegalOptins": True,
-        "expiration": now + 86400,
-        "serverTime": now,
-        "clientIp": request.client.host if request.client else None,
-        "initializeUser": True,
-        "platformType": "WiiU",
-    }
-    session_data = session_cache[auth_key]
+        expiration_dt = now_dt + timedelta(days=1)
 
-    session_id = session_data["sessionId"]
-    profile_id = session_data["profileId"]
-    user_id = session_data["userId"]
+        session_cache[auth_key] = {
+            "sessionId": str(uuid4()),
+            "profileId": str(uuid4()),
+            "userId": str(uuid4()),
+            "productId": "BJDE41",
+            "spaceId": SPACE_ID,
+            "environment": "Prod",
+            "token": "",
+            "ticket": "",
+            "accountIssues": None,
+            "nameOnPlatform": name_on_platform,
+            "hasAcceptedLegalOptins": True,
+            "expiration": expiration_dt.isoformat().replace("+00:00", "Z"),
+            "serverTime": now_dt.isoformat().replace("+00:00", "Z"),
+            "clientIp": request.client.host if request.client else None,
+            "initializeUser": True,
+            "platformType": "WiiU",
+        }
+
+    response = session_cache[auth_key]
 
     print("[JobCreateSession]")
     print(f"  genomeId       : {genome_id}")
     print(f"  nameOnPlatform : {name_on_platform}")
     print(f"  idOnPlatform   : {id_on_platform}")
-
-    response = {
-        "sessionId": session_id,
-        "profileId": profile_id,
-        "userId": user_id,
-        "productId": "BJDE41",
-        "spaceId": SPACE_ID,
-        "environment": ENVIRONMENT,
-
-        "token": f"dev-token-{session_id}",
-        "ticket": f"dev-ticket-{session_id}",
-
-        "accountIssues": [],
-        "nameOnPlatform": name_on_platform,
-        "hasAcceptedLegalOptins": True,
-
-        "expiration": int(datetime.now(timezone.utc).timestamp()) + 86400,
-        "serverTime": int(datetime.now(timezone.utc).timestamp()),
-
-        "clientIp": request.client.host if request.client else None,
-        "initializeUser": True,
-        "platformType": "WiiU",
-    }
 
     print("[JobCreateSession] Returning development SessionInfo:")
     print(response)
@@ -222,7 +164,7 @@ async def create_profile_session(request: Request):
 
 # ---------------------------------------------------------------------------
 # UbiServices: session lookup / extension
-# ---------------------------------------------------------------------------
+
 
 @app.api_route(
     "/profiles/sessions/{session_id}",
@@ -242,8 +184,7 @@ async def profile_session(
         status_code=501,
     )
 
-    # Extend the session conceptually. We will implement Ubisoft's exact
-    # session-extension semantics later.
+    # Extend the session conceptually. Implementation of exact ubisoft session extension later.
     return JSONResponse(
         {
             "sessionId": session.session_id,
@@ -257,7 +198,6 @@ async def profile_session(
 
 # ---------------------------------------------------------------------------
 # UbiServices: diagnostic endpoints for related requests
-# ---------------------------------------------------------------------------
 
 @app.api_route(
     "/users",
@@ -294,8 +234,8 @@ async def policies(request: Request):
 
 
 # ---------------------------------------------------------------------------
-# Catch-all
-# ---------------------------------------------------------------------------
+# Catch-all info
+
 
 @app.api_route(
     "/{path:path}",
@@ -323,7 +263,7 @@ async def catch_all(path: str, request: Request):
 
 # ---------------------------------------------------------------------------
 # Local development entry point
-# ---------------------------------------------------------------------------
+
 
 if __name__ == "__main__":
     import ssl
