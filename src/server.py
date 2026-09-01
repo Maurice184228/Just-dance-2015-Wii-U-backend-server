@@ -163,7 +163,7 @@ async def create_profile_session(request: Request):
     if auth_key not in session_cache:
         now = int(datetime.now(timezone.utc).timestamp())
 
-        session_cache[auth_key] = {
+    session_cache[auth_key] = {
         "sessionId": str(uuid4()),
         "profileId": str(uuid4()),
         "userId": str(uuid4()),
