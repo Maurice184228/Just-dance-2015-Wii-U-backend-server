@@ -14,11 +14,10 @@ class UbisoftConfig:
     """
 
     # Strong candidate from the embedded UbiServices application data.
-    app_id: str = "UNKNOWN"
+    app_id: str = "3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b"
 
-    # The SDK expects this, but the literal JD2015 value has not yet
-    # been recovered from the RPX.
-    app_build_id: str = "UNKNOWN"
+    # The SDK expects this, the literal JD2015 value.
+    app_build_id: str = "JD2015WIIU_E163180"
 
     # The client connects to the live Ubisoft endpoint.
     environment: str = "production"

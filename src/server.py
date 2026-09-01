@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import asdict
+
 from typing import Any
-from uuid import uuid4
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from src.ubiservices.configuration import build_configuration
-from src.ubiservices.models import SessionInfo
-from src.ubiservices.sessions import SessionStore
+
 
 from pathlib import Path
 from datetime import datetime, timezone
@@ -50,8 +48,6 @@ def save_request_log(
 
 app = FastAPI(title="Just Dance 2015 Wii U Backend")
 
-sessions = SessionStore()
-
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -60,8 +56,8 @@ sessions = SessionStore()
 # We will fill these with the real JD2015 values once we recover them from
 # the RPX / traffic analysis.
 
-APP_ID = "UNKNOWN"
-APP_BUILD_ID = "UNKNOWN"
+APP_ID = "3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b"
+APP_BUILD_ID = "JD2015WIIU_E163180"
 ENVIRONMENT = "production"
 
 # Used only by our development backend for now.
@@ -143,10 +139,20 @@ async def application_configuration(
 # UbiServices: profile session creation
 # ---------------------------------------------------------------------------
 
-@app.post("/profiles/sessions")
+@app.post("/v1/profiles/sessions")
 async def create_profile_session(request: Request):
     body = await request.body()
     log_request(request, body)
+
+    print("[UbiServices] CreateSession request body:")
+    print(body.decode("utf-8", errors="replace"))
+
+    return JSONResponse(
+        {
+            "status": "received",
+            "service": "CreateSession",
+        }
+    )
 
     # We are intentionally not pretending that we know the production
     # CreateSession JSON yet.
@@ -291,8 +297,10 @@ if __name__ == "__main__":
 
     tls_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 
-    tls_context.minimum_version = ssl.TLSVersion.TLSv1_2
+    tls_context.minimum_version = ssl.TLSVersion.TLSv1
     tls_context.maximum_version = ssl.TLSVersion.TLSv1_2
+    
+    tls_context.set_ciphers("DEFAULT:@SECLEVEL=0")
 
     tls_context.load_cert_chain(
         certfile="config/tls/api-ubiservices.crt",
