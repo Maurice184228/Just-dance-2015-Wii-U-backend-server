@@ -14,7 +14,7 @@ class UbisoftConfig:
     """
 
     # Strong candidate from the embedded UbiServices application data.
-    app_id: str = "eb158139563c54df15d3ad895dd80355"
+    app_id: str = "UNKNOWN"
 
     # The SDK expects this, but the literal JD2015 value has not yet
     # been recovered from the RPX.
