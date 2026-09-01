@@ -52,10 +52,8 @@ session_cache: dict[str, dict[str, Any]] = {}
 
 connection_cache: dict[str, dict[str, Any]] = {}
 
-# ---------------------------------------------------------------------------
-# Configuration
 
-# JD 2015 values and ID'S from the rpx file
+# configuration for the ubiservices endpoints for testing and developing
 
 APP_ID = "3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b"
 APP_BUILD_ID = "JD2015WIIU_E163180"
@@ -65,8 +63,7 @@ ENVIRONMENT = "production"
 SPACE_ID = "jd2015"
 
 
-# ---------------------------------------------------------------------------
-# Debug logging
+# Debug logging 
 
 
 def log_request(
@@ -104,7 +101,6 @@ def json_error(message: str, status_code: int = 400) -> JSONResponse:
     )
 
 
-# # ---------------------------------------------------------------------------
 # UbiServices: profile session creation
 
 
@@ -163,7 +159,6 @@ async def create_profile_session(request: Request):
 
     return JSONResponse(response)
 
-# ---------------------------------------------------------------------------
 # UbiServices: application configuration
 
 @app.api_route(
@@ -203,7 +198,6 @@ async def application_configuration(
 
     return JSONResponse(response)
 
-# ---------------------------------------------------------------------------
 # UbiServices: session lookup / extension
 
 
@@ -232,7 +226,6 @@ async def profile_session(
         status_code=404,
     )
 
-# ---------------------------------------------------------------------------
 # Development connection service
 
 @app.api_route(
@@ -261,7 +254,6 @@ async def connections(request: Request):
 
     return JSONResponse(response)
 
-# ---------------------------------------------------------------------------
 # UbiServices: diagnostic endpoints for related requests
 
 @app.api_route(
@@ -297,8 +289,6 @@ async def policies(request: Request):
         status_code=501,
     )
 
-
-# ---------------------------------------------------------------------------
 # Catch-all info
 
 @app.api_route(
@@ -330,7 +320,6 @@ async def catch_all(path: str, request: Request):
         status_code=501,
     )
     
-    # ---------------------------------------------------------------------------
 # Development WebSocket diagnostic endpoint
 
 @app.websocket("/{path:path}")
@@ -369,7 +358,6 @@ async def websocket_diagnostic(websocket: WebSocket, path: str):
     except WebSocketDisconnect:
         print("[WebSocket] Client disconnected")
 
-# ---------------------------------------------------------------------------
 # Local development entry point
 
 if __name__ == "__main__":
