@@ -5,11 +5,13 @@ from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 from src.ubiservices.session_info import SessionInfo
+from src.ubiservices.player_credentials import PlayerCredentials
 
 
 @dataclass
 class ServerSession:
     session: SessionInfo
+    player_credentials: PlayerCredentials
     source_auth_type: str
 
 
@@ -57,8 +59,23 @@ class SessionService:
             platform_type="WiiU",
         )
 
+        # Create the separate PlayerCredentials state.
+        player_credentials = PlayerCredentials(
+            independent_service_id="",
+            token_wiiu="",
+            principal_id_wiiu="",
+            account_id_wiiu="",
+            ticket="",
+            user_id=session.user_id,
+            token=session.token,
+            name_on_platform=name_on_platform,
+            accepted_opt_ins=session.has_accepted_legal_optins,
+            expiration=session.expiration,
+        )
+
         state = ServerSession(
             session=session,
+            player_credentials=player_credentials,
             source_auth_type=source_auth_type,
         )
 
