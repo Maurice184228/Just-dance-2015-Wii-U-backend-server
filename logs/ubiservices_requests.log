@@ -2302,3 +2302,15 @@ Headers:
   accept: */*
 Body:
 <empty>
+
+======================================================================
+Timestamp: 2026-09-02T17:04:29.873881+00:00
+Method: GET
+Path: /v2/connections
+Query: limit=50&offset=0&profileIds=400fc62d-1c85-4051-81a5-661bf67596b0&applications=3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b&messageTypes=
+Headers:
+  host: 127.0.0.1
+  user-agent: curl/8.7.1
+  accept: */*
+Body:
+<empty>
