@@ -126,26 +126,26 @@ async def create_profile_session(request: Request):
     now_dt = datetime.now(timezone.utc)
 
     if auth_key not in session_cache:
-        expiration_dt = now_dt + timedelta(days=1)
+     expiration_dt = now_dt + timedelta(days=1)
 
-        session_cache[auth_key] = {
-            "sessionId": str(uuid4()),
-            "profileId": str(uuid4()),
-            "userId": str(uuid4()),
-            "productId": "BJDE41",
-            "spaceId": SPACE_ID,
-            "environment": "Prod",
-            "token": "",
-            "ticket": "",
-            "accountIssues": None,
-            "nameOnPlatform": name_on_platform,
-            "hasAcceptedLegalOptins": True,
-            "expiration": expiration_dt.isoformat().replace("+00:00", "Z"),
-            "serverTime": now_dt.isoformat().replace("+00:00", "Z"),
-            "clientIp": request.client.host if request.client else None,
-            "initializeUser": True,
-            "platformType": "WiiU",
-        }
+    session_cache[auth_key] = {
+        "sessionId": str(uuid4()),
+        "profileId": str(uuid4()),
+        "userId": str(uuid4()),
+        "productId": "BJDE41",
+        "spaceId": SPACE_ID,
+        "environment": "Prod",
+        "token": "",
+        "ticket": "",
+        "accountIssues": [],
+        "nameOnPlatform": name_on_platform,
+        "hasAcceptedLegalOptins": True,
+        "expiration": int(expiration_dt.timestamp()),
+        "serverTime": int(now_dt.timestamp()),
+        "clientIp": request.client.host if request.client else None,
+        "initializeUser": True,
+        "platformType": "WiiU",
+    }
 
     response = session_cache[auth_key]
 
