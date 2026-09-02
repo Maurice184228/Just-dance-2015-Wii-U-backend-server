@@ -21,6 +21,8 @@ from src.ubiservices.connections import (
 
 from src.ubiservices.session_state import SessionState
 
+from src.ubiservices.player_credentials import PlayerCredentials
+
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 
 LOG_DIR = PROJECT_DIR / "logs"
@@ -132,7 +134,7 @@ async def create_profile_session(request: Request):
     expiration_dt = now_dt + timedelta(days=1)
 
     if auth_key not in session_cache:
-        session_cache[auth_key] = SessionInfo(
+        session_info = SessionInfo(
             session_id=str(uuid4()),
             profile_id=str(uuid4()),
             user_id=str(uuid4()),
@@ -151,8 +153,27 @@ async def create_profile_session(request: Request):
             platform_type="WiiU",
         )
 
+        player_credentials = PlayerCredentials(
+            independent_service_id="",
+            token_wiiu="",
+            principal_id_wiiu="",
+            account_id_wiiu="",
+            ticket="",
+            user_id=session_info.user_id,
+            token="",
+            name_on_platform=name_on_platform,
+            accepted_opt_ins=True,
+            expiration=session_info.expiration,
+        )
+
+        session_cache[auth_key] = SessionState(
+            session_info=session_info,
+            player_credentials=player_credentials,
+        )
+
     session = session_cache[auth_key]
-    response = session.to_dict()
+    response = session.session_info.to_dict()
+
 
     print("[JobCreateSession]")
     print(f"  genomeId       : {genome_id}")
@@ -277,9 +298,9 @@ async def profile_session(
     print(f"[JobLogin] Session lookup requested: {session_id}")
 
     for session_data in session_cache.values():
-        if session_data.session_id == session_id:
+        if session_data.session_info.session_id == session_id:
             print(f"[JobLogin] Session found: {session_id}")
-            return JSONResponse(session_data.to_dict())
+            return JSONResponse(session_data.session_info.to_dict())
 
     print(f"[JobLogin] Unknown session: {session_id}")
 
