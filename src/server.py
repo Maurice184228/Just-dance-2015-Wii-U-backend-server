@@ -19,18 +19,7 @@ from src.ubiservices.connections import (
     build_connection_search_response,
 )
 
-from src.ubiservices.session_state import SessionState
-
-from src.ubiservices.player_credentials import PlayerCredentials
-
-from src.ubiservices.session_response import build_create_session_response
-
-from src.ubiservices.session_diagnostics import (
-    validate_create_session_response,
-    
-)
-
-from src.ubiservices.identity import stable_uuid_from_authorization
+from src.ubiservices.session_service import SessionService
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 
@@ -67,7 +56,7 @@ def save_request_log(
 
 app = FastAPI(title="Just Dance 2015 Wii U Backend")
 
-session_cache: dict[str, SessionState] = {}
+session_service = SessionService()
 connection_cache: dict[str, ConnectionInfo] = {}
 
 
@@ -138,100 +127,37 @@ async def create_profile_session(request: Request):
         return json_error("Missing CreateSession fields", 400)
 
     auth_key = request.headers.get("authorization", "")
-    
+
     print("[AuthDebug]")
     print(f"Authorization present: {bool(auth_key)}")
+
     if auth_key.startswith("wiiu t="):
         print("Authorization type: WiiU token")
     else:
         print("Authorization type: other/unknown")
 
-    now_dt = datetime.now(timezone.utc)
-    expiration_dt = now_dt + timedelta(days=1)
+    state = session_service.create_or_get(
+        auth_key,
+        name_on_platform=name_on_platform,
+        client_ip=request.client.host if request.client else None,
+    )
 
-    if auth_key not in session_cache:
-        user_id = stable_uuid_from_authorization(
-            auth_key,
-            "jd2015-user",
-        )
+    session_info = state.session
 
-        profile_id = stable_uuid_from_authorization(
-            auth_key,
-            "jd2015-profile",
-        )
-
-        session_id = stable_uuid_from_authorization(
-            auth_key,
-            "jd2015-session",
-        )
-
-        session_info = SessionInfo(
-            session_id=session_id,
-            profile_id=profile_id,
-            user_id=user_id,
-            product_id="BJDE41",
-            space_id=SPACE_ID,
-            environment="Prod",
-            token="",
-            ticket="",
-            account_issues=[],
-            name_on_platform=name_on_platform,
-            has_accepted_legal_optins=True,
-            expiration=int(expiration_dt.timestamp()),
-            server_time=int(now_dt.timestamp()),
-            client_ip=request.client.host if request.client else None,
-            initialize_user=True,
-            platform_type="WiiU",
-        )
-        
-
-        player_credentials = PlayerCredentials(
-            independent_service_id="",
-            token_wiiu="",
-            principal_id_wiiu="",
-            account_id_wiiu="",
-            ticket="",
-            user_id=session_info.user_id,
-            token="",
-            name_on_platform=name_on_platform,
-            accepted_opt_ins=True,
-            expiration=session_info.expiration,
-        )
-
-        if auth_key.startswith("wiiu t="):
-            source_auth_type = "wiiu"
-        else:
-            source_auth_type = "other"
-
-        session_cache[auth_key] = SessionState(
-            session_info=session_info,
-            player_credentials=player_credentials,
-            source_auth_type=source_auth_type,
-            account_key=auth_key,
-        )
-        
-
-    session = session_cache[auth_key]
-    response = build_create_session_response(session)
-
-    diagnostic_errors = validate_create_session_response(response)
-
-    print("[CreateSessionDiagnostics]")
-
-    if diagnostic_errors:
-        print("SessionInfo schema errors:")
-        for error in diagnostic_errors:
-            print(f"  - {error}")
-    else:
-        print("SessionInfo schema: VALID")
+    response = session_info.to_dict()
 
     print("[JobCreateSession]")
+    print(f"  genomeId       : {genome_id}")
+    print(f"  nameOnPlatform : {name_on_platform}")
+    print(f"  idOnPlatform   : {id_on_platform}")
+
+    print("[JobCreateSession] Returning SessionInfo:")
     print(response)
 
     return JSONResponse(
         content=response,
         headers={
-            "Ubi-SessionId": session.session_info.session_id,
+            "Ubi-SessionId": session_info.session_id,
         },
     )
 
