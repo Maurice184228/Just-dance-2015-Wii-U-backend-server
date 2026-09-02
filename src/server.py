@@ -23,6 +23,8 @@ from src.ubiservices.session_state import SessionState
 
 from src.ubiservices.player_credentials import PlayerCredentials
 
+from src.ubiservices.session_response import build_create_session_response
+
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 
 LOG_DIR = PROJECT_DIR / "logs"
@@ -172,7 +174,7 @@ async def create_profile_session(request: Request):
         )
 
     session = session_cache[auth_key]
-    response = session.session_info.to_dict()
+    response = build_create_session_response(session)
 
     print("[JobCreateSession]")
     print(f"  genomeId       : {genome_id}")
