@@ -12,6 +12,8 @@ from src.ubiservices.configuration import build_configuration
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
 
+from src.ubiservices.session_info import SessionInfo
+
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 
