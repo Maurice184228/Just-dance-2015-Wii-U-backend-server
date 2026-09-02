@@ -27,7 +27,10 @@ from src.ubiservices.session_response import build_create_session_response
 
 from src.ubiservices.session_diagnostics import (
     validate_create_session_response,
+    
 )
+
+from src.ubiservices.identity import stable_uuid_from_authorization
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 
@@ -146,11 +149,26 @@ async def create_profile_session(request: Request):
     now_dt = datetime.now(timezone.utc)
     expiration_dt = now_dt + timedelta(days=1)
 
-    if auth_key not in session_cache:
+       if auth_key not in session_cache:
+        user_id = stable_uuid_from_authorization(
+            auth_key,
+            "jd2015-user",
+        )
+
+        profile_id = stable_uuid_from_authorization(
+            auth_key,
+            "jd2015-profile",
+        )
+
+        session_id = stable_uuid_from_authorization(
+            auth_key,
+            "jd2015-session",
+        )
+
         session_info = SessionInfo(
-            session_id=str(uuid4()),
-            profile_id=str(uuid4()),
-            user_id=str(uuid4()),
+            session_id=session_id,
+            profile_id=profile_id,
+            user_id=user_id,
             product_id="BJDE41",
             space_id=SPACE_ID,
             environment="Prod",
@@ -165,6 +183,7 @@ async def create_profile_session(request: Request):
             initialize_user=True,
             platform_type="WiiU",
         )
+        
 
         player_credentials = PlayerCredentials(
             independent_service_id="",
