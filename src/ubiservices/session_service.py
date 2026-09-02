@@ -1,15 +1,23 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone, timedelta
-from typing import Any
+from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
+from secrets import token_urlsafe
 from uuid import uuid4
 
 from src.ubiservices.session_info import SessionInfo
 
 
+@dataclass
+class ServerSession:
+    session: SessionInfo
+    server_token: str
+    server_ticket: str
+
+
 class SessionService:
     def __init__(self) -> None:
-        self._sessions: dict[str, SessionInfo] = {}
+        self._sessions: dict[str, ServerSession] = {}
 
     def create_or_get(
         self,
@@ -17,7 +25,7 @@ class SessionService:
         *,
         name_on_platform: str,
         client_ip: str | None,
-    ) -> SessionInfo:
+    ) -> ServerSession:
         existing = self._sessions.get(auth_key)
 
         if existing is not None:
@@ -45,12 +53,18 @@ class SessionService:
             platform_type="WiiU",
         )
 
-        self._sessions[auth_key] = session
-        return session
+        state = ServerSession(
+            session=session,
+            server_token=token_urlsafe(32),
+            server_ticket=token_urlsafe(32),
+        )
 
-    def find(self, session_id: str) -> SessionInfo | None:
-        for session in self._sessions.values():
-            if session.session_id == session_id:
-                return session
+        self._sessions[auth_key] = state
+        return state
+
+    def find(self, session_id: str) -> ServerSession | None:
+        for state in self._sessions.values():
+            if state.session.session_id == session_id:
+                return state
 
         return None
