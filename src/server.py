@@ -14,7 +14,10 @@ from datetime import datetime, timezone, timedelta
 
 from src.ubiservices.session_info import SessionInfo
 
-from src.ubiservices.connections import build_connection_search_response
+from src.ubiservices.connections import (
+    ConnectionInfo,
+    build_connection_search_response,
+)
 
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
@@ -53,8 +56,7 @@ def save_request_log(
 app = FastAPI(title="Just Dance 2015 Wii U Backend")
 
 session_cache: dict[str, SessionInfo] = {}
-
-connection_cache: dict[str, dict[str, Any]] = {}
+connection_cache: dict[str, ConnectionInfo] = {}
 
 
 # configuration for the ubiservices endpoints for testing and developing
@@ -104,8 +106,64 @@ def json_error(message: str, status_code: int = 400) -> JSONResponse:
         },
     )
 
-
 # UbiServices: profile session creation
+
+@app.post("/v2/profiles/sessions")
+async def create_profile_session(request: Request):
+    body = await request.body()
+    log_request(request, body)
+
+    try:
+        data: dict[str, Any] = await request.json()
+    except Exception:
+        return json_error("Invalid JSON body", 400)
+
+    genome_id = data.get("genomeId")
+    name_on_platform = data.get("nameOnPlatform")
+    id_on_platform = data.get("idOnPlatform")
+
+    if not genome_id or not name_on_platform or not id_on_platform:
+        return json_error("Missing CreateSession fields", 400)
+
+    auth_key = request.headers.get("authorization", "")
+
+    now_dt = datetime.now(timezone.utc)
+    expiration_dt = now_dt + timedelta(days=1)
+
+    if auth_key not in session_cache:
+        session_cache[auth_key] = SessionInfo(
+            session_id=str(uuid4()),
+            profile_id=str(uuid4()),
+            user_id=str(uuid4()),
+            product_id="BJDE41",
+            space_id=SPACE_ID,
+            environment="Prod",
+            token="",
+            ticket="",
+            account_issues=[],
+            name_on_platform=name_on_platform,
+            has_accepted_legal_optins=True,
+            expiration=int(expiration_dt.timestamp()),
+            server_time=int(now_dt.timestamp()),
+            client_ip=request.client.host if request.client else None,
+            initialize_user=True,
+            platform_type="WiiU",
+        )
+
+    session = session_cache[auth_key]
+    response = session.to_dict()
+
+    print("[JobCreateSession]")
+    print(f"  genomeId       : {genome_id}")
+    print(f"  nameOnPlatform : {name_on_platform}")
+    print(f"  idOnPlatform   : {id_on_platform}")
+
+    print("[JobCreateSession] Returning development SessionInfo:")
+    print(response)
+
+    return JSONResponse(response)
+
+# UbiServices: connection search
 
 @app.api_route(
     "/v2/connections",
@@ -228,34 +286,6 @@ async def profile_session(
         "Unknown JD2015 session",
         status_code=404,
     )
-
-# Development connection service
-
-@app.api_route(
-    "/v2/connections",
-    methods=["GET", "POST"],
-)
-async def connections(request: Request):
-    body = await request.body()
-    log_request(request, body)
-
-    print("[JobInitiateConnection] Connection request received")
-
-    connection_id = str(uuid4())
-
-    connection_cache[connection_id] = {
-        "connectionId": connection_id,
-        "status": "ready",
-        "environment": "Prod",
-        "platformType": "WiiU",
-    }
-
-    response = connection_cache[connection_id]
-
-    print("[JobInitiateConnection] Returning development connection:")
-    print(response)
-
-    return JSONResponse(response)
 
 # UbiServices: diagnostic endpoints for related requests
 
