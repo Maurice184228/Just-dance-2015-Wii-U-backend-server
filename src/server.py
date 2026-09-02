@@ -142,7 +142,52 @@ async def create_profile_session(request: Request):
         client_ip=request.client.host if request.client else None,
     )
 
+   # UbiServices: profile session creation
+
+@app.post("/v2/profiles/sessions")
+async def create_profile_session(request: Request):
+    body = await request.body()
+    log_request(request, body)
+
+    try:
+        data: dict[str, Any] = await request.json()
+    except Exception:
+        return json_error("Invalid JSON body", 400)
+
+    genome_id = data.get("genomeId")
+    name_on_platform = data.get("nameOnPlatform")
+    id_on_platform = data.get("idOnPlatform")
+
+    if not genome_id or not name_on_platform or not id_on_platform:
+        return json_error("Missing CreateSession fields", 400)
+
+    auth_key = request.headers.get("authorization", "")
+
+    print("[AuthDebug]")
+    print(f"Authorization present: {bool(auth_key)}")
+
+    if auth_key.startswith("wiiu t="):
+        print("Authorization type: WiiU token")
+    else:
+        print("Authorization type: other/unknown")
+
+    state = session_service.create_or_get(
+        auth_key,
+        name_on_platform=name_on_platform,
+        client_ip=request.client.host if request.client else None,
+    )
+
     session_info = state.session
+
+    print("[PlayerCredentials]")
+    print(f"  userId           : {state.player_credentials.user_id}")
+    print(f"  nameOnPlatform   : {state.player_credentials.name_on_platform}")
+    print(f"  acceptedOptIns   : {state.player_credentials.accepted_opt_ins}")
+    print(f"  expiration       : {state.player_credentials.expiration}")
+    print(f"  tokenWiiU        : {'present' if state.player_credentials.token_wiiu else 'empty'}")
+    print(f"  principalIdWiiU  : {'present' if state.player_credentials.principal_id_wiiu else 'empty'}")
+    print(f"  accountIdWiiU    : {'present' if state.player_credentials.account_id_wiiu else 'empty'}")
+    print(f"  ticket           : {'present' if state.player_credentials.ticket else 'empty'}")
 
     print("[SessionAuth]")
     print(f"  sourceAuthType: {state.source_auth_type}")
