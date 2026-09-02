@@ -259,7 +259,6 @@ async def application_configuration(
 
 # UbiServices: session lookup / extension
 
-
 @app.api_route(
     "/profiles/sessions/{session_id}",
     methods=["GET", "POST", "PUT", "PATCH"],
@@ -273,10 +272,11 @@ async def profile_session(
 
     print(f"[JobLogin] Session lookup requested: {session_id}")
 
-    for session_data in session_cache.values():
-        if session_data.session_info.session_id == session_id:
-            print(f"[JobLogin] Session found: {session_id}")
-            return JSONResponse(session_data.session_info.to_dict())
+    state = session_service.find(session_id)
+
+    if state is not None:
+        print(f"[JobLogin] Session found: {session_id}")
+        return JSONResponse(state.session.to_dict())
 
     print(f"[JobLogin] Unknown session: {session_id}")
 
@@ -284,7 +284,6 @@ async def profile_session(
         "Unknown JD2015 session",
         status_code=404,
     )
-
 # UbiServices: diagnostic endpoints for related requests
 
 @app.api_route(
