@@ -135,6 +135,13 @@ async def create_profile_session(request: Request):
         return json_error("Missing CreateSession fields", 400)
 
     auth_key = request.headers.get("authorization", "")
+    
+    print("[AuthDebug]")
+    print(f"Authorization present: {bool(auth_key)}")
+    if auth_key.startswith("wiiu t="):
+        print("Authorization type: WiiU token")
+    else:
+        print("Authorization type: other/unknown")
 
     now_dt = datetime.now(timezone.utc)
     expiration_dt = now_dt + timedelta(days=1)
@@ -177,7 +184,12 @@ async def create_profile_session(request: Request):
             player_credentials=player_credentials,
         )
 
-        session = session_cache[auth_key]
+        session_cache[auth_key] = SessionState(
+            session_info=session_info,
+            player_credentials=player_credentials,
+        )
+
+    session = session_cache[auth_key]
     response = build_create_session_response(session)
 
     diagnostic_errors = validate_create_session_response(response)
