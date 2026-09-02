@@ -50,7 +50,7 @@ def save_request_log(
 
 app = FastAPI(title="Just Dance 2015 Wii U Backend")
 
-session_cache: dict[str, dict[str, Any]] = {}
+session_cache: dict[str, SessionInfo] = {}
 
 connection_cache: dict[str, dict[str, Any]] = {}
 
@@ -129,27 +129,28 @@ async def create_profile_session(request: Request):
     expiration_dt = now_dt + timedelta(days=1)
 
     if auth_key not in session_cache:
-        session_cache[auth_key] = {
-            "sessionId": str(uuid4()),
-            "profileId": str(uuid4()),
-            "userId": str(uuid4()),
-            "productId": "BJDE41",
-            "spaceId": SPACE_ID,
-            "environment": "Prod",
-            "token": "",
-            "ticket": "",
-            "accountIssues": [],
-            "nameOnPlatform": name_on_platform,
-            "hasAcceptedLegalOptins": True,
-            "expiration": int(expiration_dt.timestamp()),
-            "serverTime": int(now_dt.timestamp()),
-            "clientIp": request.client.host if request.client else None,
-            "initializeUser": True,
-            "platformType": "WiiU",
-        }
+        session_cache[auth_key] = SessionInfo(
+            session_id=str(uuid4()),
+            profile_id=str(uuid4()),
+            user_id=str(uuid4()),
+            product_id="BJDE41",
+            space_id=SPACE_ID,
+            environment="Prod",
+            token="",
+            ticket="",
+            account_issues=[],
+            name_on_platform=name_on_platform,
+            has_accepted_legal_optins=True,
+            expiration=int(expiration_dt.timestamp()),
+            server_time=int(now_dt.timestamp()),
+            client_ip=request.client.host if request.client else None,
+            initialize_user=True,
+            platform_type="WiiU",
+        )
 
-    response = session_cache[auth_key]
-
+    session = session_cache[auth_key]
+    response = session.to_dict()
+    
     print("[JobCreateSession]")
     print(f"  genomeId       : {genome_id}")
     print(f"  nameOnPlatform : {name_on_platform}")
@@ -216,9 +217,9 @@ async def profile_session(
     print(f"[JobLogin] Session lookup requested: {session_id}")
 
     for session_data in session_cache.values():
-        if session_data.get("sessionId") == session_id:
+        if session_data.session_id == session_id:
             print(f"[JobLogin] Session found: {session_id}")
-            return JSONResponse(session_data)
+            return JSONResponse(session_data.to_dict())
 
     print(f"[JobLogin] Unknown session: {session_id}")
 
