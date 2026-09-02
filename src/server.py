@@ -19,6 +19,7 @@ from src.ubiservices.connections import (
     build_connection_search_response,
 )
 
+from src.ubiservices.session_state import SessionState
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 
@@ -55,7 +56,7 @@ def save_request_log(
 
 app = FastAPI(title="Just Dance 2015 Wii U Backend")
 
-session_cache: dict[str, SessionInfo] = {}
+session_cache: dict[str, SessionState] = {}
 connection_cache: dict[str, ConnectionInfo] = {}
 
 
