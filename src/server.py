@@ -174,7 +174,6 @@ async def create_profile_session(request: Request):
     session = session_cache[auth_key]
     response = session.session_info.to_dict()
 
-
     print("[JobCreateSession]")
     print(f"  genomeId       : {genome_id}")
     print(f"  nameOnPlatform : {name_on_platform}")
