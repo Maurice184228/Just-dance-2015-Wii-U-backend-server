@@ -144,6 +144,9 @@ async def create_profile_session(request: Request):
 
     session_info = state.session
 
+    print("[SessionAuth]")
+    print(f"  sourceAuthType: {state.source_auth_type}")
+
     response = session_info.to_dict()
 
     print("[JobCreateSession]")

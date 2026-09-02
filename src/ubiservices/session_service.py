@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from secrets import token_urlsafe
 from uuid import uuid4
 
 from src.ubiservices.session_info import SessionInfo
@@ -11,8 +10,7 @@ from src.ubiservices.session_info import SessionInfo
 @dataclass
 class ServerSession:
     session: SessionInfo
-    server_token: str
-    server_ticket: str
+    source_auth_type: str
 
 
 class SessionService:
@@ -31,11 +29,14 @@ class SessionService:
         if existing is not None:
             return existing
 
+        source_auth_type = (
+            "wiiu"
+            if auth_key.startswith("wiiu t=")
+            else "other"
+        )
+
         now = datetime.now(timezone.utc)
         expiration = now + timedelta(days=1)
-
-        server_token = token_urlsafe(32)
-        server_ticket = token_urlsafe(32)
 
         session = SessionInfo(
             session_id=str(uuid4()),
@@ -44,8 +45,8 @@ class SessionService:
             product_id="BJDE41",
             space_id="jd2015",
             environment="Prod",
-            token=server_token,
-            ticket=server_ticket,
+            token="",
+            ticket="",
             account_issues=[],
             name_on_platform=name_on_platform,
             has_accepted_legal_optins=True,
@@ -58,8 +59,7 @@ class SessionService:
 
         state = ServerSession(
             session=session,
-            server_token=server_token,
-            server_ticket=server_ticket,
+            source_auth_type=source_auth_type,
         )
 
         self._sessions[auth_key] = state
