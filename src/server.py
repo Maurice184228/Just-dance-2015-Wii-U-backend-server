@@ -149,7 +149,7 @@ async def create_profile_session(request: Request):
     now_dt = datetime.now(timezone.utc)
     expiration_dt = now_dt + timedelta(days=1)
 
-       if auth_key not in session_cache:
+    if auth_key not in session_cache:
         user_id = stable_uuid_from_authorization(
             auth_key,
             "jd2015-user",
@@ -198,15 +198,18 @@ async def create_profile_session(request: Request):
             expiration=session_info.expiration,
         )
 
-        session_cache[auth_key] = SessionState(
-            session_info=session_info,
-            player_credentials=player_credentials,
-        )
+        if auth_key.startswith("wiiu t="):
+            source_auth_type = "wiiu"
+        else:
+            source_auth_type = "other"
 
         session_cache[auth_key] = SessionState(
             session_info=session_info,
             player_credentials=player_credentials,
+            source_auth_type=source_auth_type,
+            account_key=auth_key,
         )
+        
 
     session = session_cache[auth_key]
     response = build_create_session_response(session)

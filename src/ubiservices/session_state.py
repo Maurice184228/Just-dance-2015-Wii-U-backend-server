@@ -10,3 +10,7 @@ from src.ubiservices.session_info import SessionInfo
 class SessionState:
     session_info: SessionInfo
     player_credentials: PlayerCredentials
+
+    # Identity metadata used internally by the backend.
+    source_auth_type: str
+    account_key: str
