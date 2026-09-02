@@ -14,6 +14,8 @@ from datetime import datetime, timezone, timedelta
 
 from src.ubiservices.session_info import SessionInfo
 
+from src.ubiservices.connections import build_connection_search_response
+
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 
@@ -105,58 +107,57 @@ def json_error(message: str, status_code: int = 400) -> JSONResponse:
 
 # UbiServices: profile session creation
 
-
-@app.post("/v2/profiles/sessions")
-async def create_profile_session(request: Request):
+@app.api_route(
+    "/v2/connections",
+    methods=["GET", "POST"],
+)
+async def connections(request: Request):
     body = await request.body()
     log_request(request, body)
 
+    profile_ids_raw = request.query_params.get("profileIds", "")
+    applications_raw = request.query_params.get("applications", "")
+    message_types_raw = request.query_params.get("messageTypes", "")
+
+    profile_ids = [
+        value for value in profile_ids_raw.split(",") if value
+    ]
+
+    applications = [
+        value for value in applications_raw.split(",") if value
+    ] or None
+
+    message_types = [
+        value for value in message_types_raw.split(",") if value
+    ] or None
+
     try:
-        data: dict[str, Any] = await request.json()
-    except Exception:
-        return json_error("Invalid JSON body", 400)
+        limit = int(request.query_params.get("limit", "50"))
+        offset = int(request.query_params.get("offset", "0"))
+    except ValueError:
+        return json_error("Invalid limit or offset", 400)
 
-    genome_id = data.get("genomeId")
-    name_on_platform = data.get("nameOnPlatform")
-    id_on_platform = data.get("idOnPlatform")
-
-    if not genome_id or not name_on_platform or not id_on_platform:
-        return json_error("Missing CreateSession fields", 400)
-
-    auth_key = request.headers.get("authorization", "")
-
-    now_dt = datetime.now(timezone.utc)
-    expiration_dt = now_dt + timedelta(days=1)
-
-    if auth_key not in session_cache:
-        session_cache[auth_key] = SessionInfo(
-            session_id=str(uuid4()),
-            profile_id=str(uuid4()),
-            user_id=str(uuid4()),
-            product_id="BJDE41",
-            space_id=SPACE_ID,
-            environment="Prod",
-            token="",
-            ticket="",
-            account_issues=[],
-            name_on_platform=name_on_platform,
-            has_accepted_legal_optins=True,
-            expiration=int(expiration_dt.timestamp()),
-            server_time=int(now_dt.timestamp()),
-            client_ip=request.client.host if request.client else None,
-            initialize_user=True,
-            platform_type="WiiU",
+    if not profile_ids:
+        return json_error(
+            "The profileIds container MUST contain at least 1 profile id.",
+            400,
         )
 
-    session = session_cache[auth_key]
-    response = session.to_dict()
-    
-    print("[JobCreateSession]")
-    print(f"  genomeId       : {genome_id}")
-    print(f"  nameOnPlatform : {name_on_platform}")
-    print(f"  idOnPlatform   : {id_on_platform}")
+    response = build_connection_search_response(
+        profile_ids=profile_ids,
+        applications=applications,
+        message_types=message_types,
+        limit=limit,
+        offset=offset,
+    )
 
-    print("[JobCreateSession] Returning development SessionInfo:")
+    print("[JobRequestConnections]")
+    print(f"  profileIds   : {profile_ids}")
+    print(f"  applications : {applications}")
+    print(f"  messageTypes : {message_types}")
+    print(f"  limit        : {limit}")
+    print(f"  offset       : {offset}")
+    print("[JobRequestConnections] Returning development connections:")
     print(response)
 
     return JSONResponse(response)

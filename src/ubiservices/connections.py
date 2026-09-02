@@ -1,51 +1,69 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Any
 
 
 @dataclass
 class ConnectionInfo:
-    application_id: str
-    profile_id: str
     contact_protocol: str
-    created_time: str
+    created_date: str
+    profile_id: str
+    application_id: str
+    process_id: str
     connection_id: str
     contact_url: str
+    last_modified_date: str
     message_types: list[str]
-    json_data: dict[str, Any]
 
     def to_dict(self) -> dict[str, Any]:
         return {
-            "applicationId": self.application_id,
-            "profileId": self.profile_id,
             "contactProtocol": self.contact_protocol,
-            "createdTime": self.created_time,
+            "createdDate": self.created_date,
+            "profileId": self.profile_id,
+            "applicationId": self.application_id,
+            "processId": self.process_id,
             "connectionId": self.connection_id,
             "contactUrl": self.contact_url,
+            "lastModifiedDate": self.last_modified_date,
             "messageTypes": self.message_types,
-            "jsonData": self.json_data,
         }
 
 
-def build_connection_info(
-    *,
-    application_id: str,
-    profile_id: str,
-    contact_protocol: str,
-    created_time: str,
-    connection_id: str,
-    contact_url: str,
+def build_connection_search_response(
+    profile_ids: list[str],
+    applications: list[str] | None = None,
     message_types: list[str] | None = None,
-    json_data: dict[str, Any] | None = None,
-) -> ConnectionInfo:
-    return ConnectionInfo(
-        application_id=application_id,
-        profile_id=profile_id,
-        contact_protocol=contact_protocol,
-        created_time=created_time,
-        connection_id=connection_id,
-        contact_url=contact_url,
-        message_types=message_types or [],
-        json_data=json_data or {},
-    )
+    limit: int = 50,
+    offset: int = 0,
+) -> dict[str, Any]:
+    if not profile_ids:
+        raise ValueError(
+            "The profileIds container MUST contain at least 1 profile id."
+        )
+
+    now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+    connections: list[dict[str, Any]] = []
+
+    for profile_id in profile_ids:
+        connection = ConnectionInfo(
+            contact_protocol="websocket",
+            created_date=now,
+            profile_id=profile_id,
+            application_id="3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b",
+            process_id="jd2015-wiiu",
+            connection_id="",
+            contact_url="/websocket/server",
+            last_modified_date=now,
+            message_types=message_types or [],
+        )
+
+        connections.append(connection.to_dict())
+
+    return {
+        "limit": limit,
+        "offset": offset,
+        "connections": connections,
+    }
