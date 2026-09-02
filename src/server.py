@@ -25,6 +25,10 @@ from src.ubiservices.player_credentials import PlayerCredentials
 
 from src.ubiservices.session_response import build_create_session_response
 
+from src.ubiservices.session_diagnostics import (
+    validate_create_session_response,
+)
+
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 
 LOG_DIR = PROJECT_DIR / "logs"
@@ -173,23 +177,29 @@ async def create_profile_session(request: Request):
             player_credentials=player_credentials,
         )
 
-    session = session_cache[auth_key]
+        session = session_cache[auth_key]
     response = build_create_session_response(session)
 
-    print("[JobCreateSession]")
-    print(f"  genomeId       : {genome_id}")
-    print(f"  nameOnPlatform : {name_on_platform}")
-    print(f"  idOnPlatform   : {id_on_platform}")
+    diagnostic_errors = validate_create_session_response(response)
 
-    print("[JobCreateSession] Returning development SessionInfo:")
+    print("[CreateSessionDiagnostics]")
+
+    if diagnostic_errors:
+        print("SessionInfo schema errors:")
+        for error in diagnostic_errors:
+            print(f"  - {error}")
+    else:
+        print("SessionInfo schema: VALID")
+
+    print("[JobCreateSession]")
     print(response)
 
     return JSONResponse(
-    content=response,
-    headers={
-        "Ubi-SessionId": session.session_info.session_id,
-    },
-)
+        content=response,
+        headers={
+            "Ubi-SessionId": session.session_info.session_id,
+        },
+    )
 
 # UbiServices: connection search
 
