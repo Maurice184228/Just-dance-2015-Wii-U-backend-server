@@ -182,7 +182,12 @@ async def create_profile_session(request: Request):
     print("[JobCreateSession] Returning development SessionInfo:")
     print(response)
 
-    return JSONResponse(response)
+    return JSONResponse(
+    content=response,
+    headers={
+        "Ubi-SessionId": session.session_info.session_id,
+    },
+)
 
 # UbiServices: connection search
 
