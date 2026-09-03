@@ -11,4 +11,13 @@ KNOWN_RESPONSES: dict[int, bytes] = {
 
 
 def build_response(packet: PRUDPv0Packet) -> bytes | None:
+    if packet.source != 0xAF:
+        return None
+
+    if packet.destination != 0xA1:
+        return None
+
+    if packet.session_id != 0x7A:
+        return None
+
     return KNOWN_RESPONSES.get(packet.operation)
