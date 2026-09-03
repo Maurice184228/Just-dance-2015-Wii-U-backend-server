@@ -43,3 +43,41 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+    
+    from .sessions import RDVSessionStore
+
+
+def test_session_store() -> None:
+    store = RDVSessionStore()
+
+    print("\nRDV SESSION STORE TEST")
+    print("======================")
+
+    for packet_number, data in PACKETS.items():
+        packet = parse_v0(data)
+
+        session = store.get_or_create(packet)
+
+        print(
+            f"Packet {packet_number}: "
+            f"session=0x{session.session_id:02x}, "
+            f"operation=0x{session.last_operation:04x}, "
+            f"sequence={session.last_sequence_id}, "
+            f"packets={session.packets_received}"
+        )
+
+    print("\nStored sessions:")
+
+    for session in store.all():
+        print(
+            f"  session=0x{session.session_id:02x} "
+            f"signature={session.packet_signature.hex()} "
+            f"last_operation=0x{session.last_operation:04x} "
+            f"last_sequence={session.last_sequence_id} "
+            f"packets={session.packets_received}"
+        )
+
+
+if __name__ == "__main__":
+    main()
+    test_session_store()
