@@ -4572,3 +4572,42 @@ Headers:
   content-length: 111
 Body:
 {"genomeId":"3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b","nameOnPlatform":"DragonKing17","idOnPlatform":"1446702929"}
+
+======================================================================
+Timestamp: 2026-09-03T13:22:05.356614+00:00
+Method: POST
+Path: /v2/profiles/sessions
+Query: 
+Headers:
+  host: 127.0.0.1
+  user-agent: curl/8.7.1
+  accept: */*
+  content-type: application/json
+  authorization: test-session
+  content-length: 111
+Body:
+{"genomeId":"3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b","nameOnPlatform":"DragonKing17","idOnPlatform":"1446702929"}
+
+======================================================================
+Timestamp: 2026-09-03T13:22:14.247875+00:00
+Method: GET
+Path: /applications/3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b/configuration
+Query: 
+Headers:
+  host: 127.0.0.1
+  user-agent: curl/8.7.1
+  accept: */*
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-03T13:22:49.539016+00:00
+Method: GET
+Path: /profiles/sessions/cda8ce91-b9c0-42eb-b4e3-30e04a038193
+Query: 
+Headers:
+  host: 127.0.0.1
+  user-agent: curl/8.7.1
+  accept: */*
+Body:
+<empty>

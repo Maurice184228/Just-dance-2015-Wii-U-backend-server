@@ -9,8 +9,8 @@ PACKETS = {
     ),
 
     594: bytes.fromhex(
-    "a1af900000000000000000a00432db000099"
-),
+        "a1af900000000000000000a00432db000099"
+    ),
 
     595: bytes.fromhex(
         "afa161007aa00432db0100a439da34d2"
@@ -26,13 +26,20 @@ PACKETS = {
 }
 
 
-for packet_number, data in PACKETS.items():
-    print(f"\nPacket {packet_number}")
-    print(f"Length: {len(data)} bytes")
+def main() -> None:
+    for packet_number, data in PACKETS.items():
+        print(f"\nPacket {packet_number}")
+        print(f"Length: {len(data)} bytes")
 
-    try:
-        packet = parse_v0(data)
-        print(packet.describe())
-        print(f"Payload: {packet.payload.hex()}")
-    except ValueError as exc:
-        print(f"Parse error: {exc}")
+        try:
+            packet = parse_v0(data)
+
+            print(packet.describe())
+            print(f"Payload: {packet.payload.hex()}")
+
+        except ValueError as exc:
+            print(f"Parse error: {exc}")
+
+
+if __name__ == "__main__":
+    main()
