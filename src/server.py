@@ -127,6 +127,16 @@ async def create_profile_session(request: Request):
         return json_error("Missing CreateSession fields", 400)
 
     auth_key = request.headers.get("authorization", "")
+    
+    requested_platform = request.headers.get(
+        "ubi-requestedplatformtype"
+    )
+
+    print("[CreateSessionInputs]")
+    print(f"  requestedPlatform: {requested_platform!r}")
+    print(f"  genomeId: {genome_id}")
+    print(f"  nameOnPlatform: {name_on_platform}")
+    print(f"  idOnPlatform: {id_on_platform}")
 
     print("[AuthDebug]")
     print(f"Authorization present: {bool(auth_key)}")
