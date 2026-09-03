@@ -25,12 +25,14 @@ class SessionInfo:
 
     def to_dict(self) -> dict[str, Any]:
         return {
-            "sessionId": self.session_id,
+            "clientIp": self.client_ip,
+            "platformType": self.platform_type,
             "profileId": self.profile_id,
-            "userId": self.user_id,
-            "productId": self.product_id,
             "spaceId": self.space_id,
             "environment": self.environment,
+            "sessionId": self.session_id,
+            "userId": self.user_id,
+            "productId": self.product_id,
             "token": self.token,
             "ticket": self.ticket,
             "accountIssues": self.account_issues,
@@ -38,7 +40,5 @@ class SessionInfo:
             "hasAcceptedLegalOptins": self.has_accepted_legal_optins,
             "expiration": self.expiration,
             "serverTime": self.server_time,
-            "clientIp": self.client_ip,
             "initializeUser": self.initialize_user,
-            "platformType": self.platform_type,
         }

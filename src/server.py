@@ -154,7 +154,9 @@ async def create_profile_session(request: Request):
         name_on_platform=name_on_platform,
         client_ip=request.client.host if request.client else None,
     )
-
+    print("[SessionState]")
+    print(f"  existingSession: {state.session.session_id}")
+    print(f"  sourceAuthType : {state.source_auth_type}")
     session_info = state.session
 
     print("[PlayerCredentials]")
