@@ -21,6 +21,9 @@ from src.ubiservices.connections import (
 
 from src.ubiservices.session_service import SessionService
 
+import hashlib
+import json
+
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 
 LOG_DIR = PROJECT_DIR / "logs"
@@ -168,6 +171,16 @@ async def create_profile_session(request: Request):
     print(f"  sourceAuthType: {state.source_auth_type}")
 
     response = session_info.to_dict()
+    
+    raw_response = json.dumps(
+        response,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+
+    print("[CreateSessionWire]")
+    print(f"  byteLength: {len(raw_response)}")
+    print(f"  sha256: {hashlib.sha256(raw_response).hexdigest()}")
 
     print("[JobCreateSession]")
     print(f"  genomeId       : {genome_id}")
