@@ -175,8 +175,23 @@ async def create_profile_session(request: Request):
     print("[SessionAuth]")
     print(f"  sourceAuthType: {state.source_auth_type}")
 
+    session_info = state.session
+
+    print("[PlayerCredentials]")
+    print(f"  userId           : {state.player_credentials.user_id}")
+    print(f"  nameOnPlatform   : {state.player_credentials.name_on_platform}")
+    print(f"  acceptedOptIns   : {state.player_credentials.accepted_opt_ins}")
+    print(f"  expiration       : {state.player_credentials.expiration}")
+    print(f"  tokenWiiU        : {'present' if state.player_credentials.token_wiiu else 'empty'}")
+    print(f"  principalIdWiiU  : {'present' if state.player_credentials.principal_id_wiiu else 'empty'}")
+    print(f"  accountIdWiiU    : {'present' if state.player_credentials.account_id_wiiu else 'empty'}")
+    print(f"  ticket           : {'present' if state.player_credentials.ticket else 'empty'}")
+
+    print("[SessionAuth]")
+    print(f"  sourceAuthType: {state.source_auth_type}")
+
     response = session_info.to_dict()
-    
+
     raw_response = json.dumps(
         response,
         separators=(",", ":"),
