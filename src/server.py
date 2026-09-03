@@ -149,15 +149,18 @@ async def create_profile_session(request: Request):
     else:
         print("Authorization type: other/unknown")
 
+    existing_session = auth_key in session_service._sessions
+
+    print("[CreateSessionAttempt]")
+    print(f"  existingSessionBeforeCreate: {existing_session}")
+
     state = session_service.create_or_get(
         auth_key,
         name_on_platform=name_on_platform,
         client_ip=request.client.host if request.client else None,
     )
-    print("[SessionState]")
-    print(f"  existingSession: {state.session.session_id}")
-    print(f"  sourceAuthType : {state.source_auth_type}")
-    session_info = state.session
+
+    print(f"  sessionId: {state.session.session_id}")
 
     print("[PlayerCredentials]")
     print(f"  userId           : {state.player_credentials.user_id}")
