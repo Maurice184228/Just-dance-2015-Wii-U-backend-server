@@ -40,6 +40,9 @@ class SessionService:
         now = datetime.now(timezone.utc)
         expiration = now + timedelta(days=1)
 
+        server_token = str(uuid4())
+        server_ticket = str(uuid4())
+
         session = SessionInfo(
             session_id=str(uuid4()),
             profile_id=str(uuid4()),
@@ -47,8 +50,8 @@ class SessionService:
             product_id="BJDE41",
             space_id="jd2015",
             environment="Prod",
-            token="",
-            ticket="",
+            token=server_token,
+            ticket=server_ticket,
             account_issues=[],
             name_on_platform=name_on_platform,
             has_accepted_legal_optins=True,
@@ -65,9 +68,9 @@ class SessionService:
             token_wiiu="",
             principal_id_wiiu="",
             account_id_wiiu="",
-            ticket="",
+            ticket=server_ticket,
             user_id=session.user_id,
-            token=session.token,
+            token=server_token,
             name_on_platform=name_on_platform,
             accepted_opt_ins=session.has_accepted_legal_optins,
             expiration=session.expiration,
