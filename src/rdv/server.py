@@ -7,6 +7,8 @@ from .protocol import PRUDPv0Packet, parse_v0
 from .responses import build_response
 from .sessions import RDVSessionStore
 
+from .operations import get_operation
+
 
 @dataclass
 class RDVServer:
@@ -50,6 +52,16 @@ class PRUDPProtocol(asyncio.DatagramProtocol):
             return
 
         session = self.server.sessions.get_or_create(packet)
+        
+        operation = get_operation(packet.operation)
+
+        print("[RDV] Operation")
+
+        if operation is not None:
+            print(f"  name: {operation.name}")
+            print(f"  description: {operation.description}")
+        else:
+            print(f"  unknown: 0x{packet.operation:04x}")
 
         print(f"  source : 0x{packet.source:02x}")
         print(f"  dest   : 0x{packet.destination:02x}")
