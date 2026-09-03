@@ -4,6 +4,7 @@ import asyncio
 from dataclasses import dataclass
 
 from .protocol import PRUDPv0Packet, parse_v0
+from .responses import build_response
 from .sessions import RDVSessionStore
 
 
@@ -63,18 +64,15 @@ class PRUDPProtocol(asyncio.DatagramProtocol):
             f"  last operation: "
             f"0x{session.last_operation:04x}"
         )
+        
+        # Known request/response pair from the captured fixture.
+        response = build_response(packet)
 
-        # Request/response pair from the captures.
-        if (
-            packet.source == 0xAF
-            and packet.destination == 0xA1
-            and packet.operation == 0x0061
-        ):
-            response = bytes.fromhex(
-                "a1af91007aa439da34010000000000000050"
+        if response is not None:
+            print(
+                f"[RDV] Sending response for "
+                f"0x{packet.operation:04x}"
             )
-
-            print("[RDV] Sending known 0x0091 response")
             print(f"  bytes: {len(response)}")
 
             if self.transport is not None:
