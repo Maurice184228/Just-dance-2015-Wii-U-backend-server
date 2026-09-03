@@ -64,6 +64,22 @@ class PRUDPProtocol(asyncio.DatagramProtocol):
             f"0x{session.last_operation:04x}"
         )
 
+        # Request/response pair from the captures.
+        if (
+            packet.source == 0xAF
+            and packet.destination == 0xA1
+            and packet.operation == 0x0061
+        ):
+            response = bytes.fromhex(
+                "a1af91007aa439da34010000000000000050"
+            )
+
+            print("[RDV] Sending known 0x0091 response")
+            print(f"  bytes: {len(response)}")
+
+            if self.transport is not None:
+                self.transport.sendto(response, addr)
+                
     def error_received(self, exc: Exception) -> None:
         print(f"[RDV] UDP error: {exc}")
 
