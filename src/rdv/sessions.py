@@ -10,6 +10,7 @@ class RDVSession:
     session_id: int
     packet_signature: bytes
     last_sequence_id: int
+    next_sequence_id: int
     last_operation: int
     client_host: str
     client_port: int
@@ -26,6 +27,7 @@ class RDVSession:
         self.client_host = addr[0]
         self.client_port = addr[1]
         self.packets_received += 1
+        self.next_sequence_id = packet.sequence_id + 1
 
 
 class RDVSessionStore:
@@ -52,6 +54,7 @@ class RDVSessionStore:
                 session_id=packet.session_id,
                 packet_signature=packet.packet_signature,
                 last_sequence_id=packet.sequence_id,
+                next_sequence_id=packet.sequence_id + 1,
                 last_operation=packet.operation,
                 client_host=addr[0],
                 client_port=addr[1],
