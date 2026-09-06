@@ -16,6 +16,9 @@ class RDVSession:
     client_port: int
     packets_received: int = 0
 
+    def accepts_sequence(self, sequence_id: int) -> bool:
+        return sequence_id == self.next_sequence_id
+
     def update(
         self,
         packet: PRUDPv0Packet,
