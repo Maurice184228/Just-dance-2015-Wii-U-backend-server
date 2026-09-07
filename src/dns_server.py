@@ -6,7 +6,7 @@ from typing import Optional
 from dnslib import DNSRecord, RR, A, QTYPE
 
 
-LISTEN_HOST = "10.0.0.164"
+LISTEN_HOST = "10.0.0.165"
 LISTEN_PORT = 53
 
 OVERRIDE_HOST = "api-ubiservices.ubi.com."
