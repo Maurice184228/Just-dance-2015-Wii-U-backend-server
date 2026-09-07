@@ -51,10 +51,30 @@ class PRUDPProtocol(asyncio.DatagramProtocol):
             print(f"  parse error: {exc}")
             return
 
+        existing_session = self.server.sessions.get(
+            packet.session_id,
+            addr,
+        )
+
+        if existing_session is not None:
+            if not existing_session.accepts_sequence(
+                packet.sequence_id
+            ):
+                print("[RDV] Sequence rejected")
+                print(
+                    f"  expected: "
+                    f"{existing_session.next_sequence_id}"
+                )
+                print(
+                    f"  received: "
+                    f"{packet.sequence_id}"
+                )
+                return
+
         session = self.server.sessions.get_or_create(
-    packet,
-    addr,
-)
+            packet,
+            addr,
+        )
         
         operation = get_operation(packet.operation)
 
