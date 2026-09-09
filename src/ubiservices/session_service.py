@@ -63,9 +63,14 @@ class SessionService:
         )
 
         # Create the separate PlayerCredentials state.
+        wiiu_token = ""
+
+        if auth_key.startswith("wiiu t="):
+            wiiu_token = auth_key[len("wiiu t="):].strip()
+
         player_credentials = PlayerCredentials(
             independent_service_id="",
-            token_wiiu="",
+            token_wiiu=wiiu_token,
             principal_id_wiiu="",
             account_id_wiiu="",
             ticket=server_ticket,
