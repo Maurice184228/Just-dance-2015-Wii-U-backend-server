@@ -63,17 +63,11 @@ session_service = SessionService()
 connection_cache: dict[str, ConnectionInfo] = {}
 
 
-# configuration for the ubiservices endpoints for testing and developing
-
 APP_ID = "3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b"
 APP_BUILD_ID = "JD2015WIIU_E163180"
 ENVIRONMENT = "production"
 
-# Used for the backend development.
 SPACE_ID = "jd2015"
-
-
-# Debug logging 
 
 
 def log_request(
@@ -110,7 +104,6 @@ def json_error(message: str, status_code: int = 400) -> JSONResponse:
         },
     )
 
-# UbiServices: profile session creation
 
 @app.post("/v2/profiles/sessions")
 async def create_profile_session(request: Request):
@@ -130,7 +123,7 @@ async def create_profile_session(request: Request):
         return json_error("Missing CreateSession fields", 400)
 
     auth_key = request.headers.get("authorization", "")
-    
+
     requested_platform = request.headers.get(
         "ubi-requestedplatformtype"
     )
@@ -156,7 +149,9 @@ async def create_profile_session(request: Request):
 
     state = session_service.create_or_get(
         auth_key,
-        name_on_platform=name_on_platform,
+        genome_id=str(genome_id),
+        id_on_platform=str(id_on_platform),
+        name_on_platform=str(name_on_platform),
         client_ip=request.client.host if request.client else None,
     )
 
@@ -176,19 +171,6 @@ async def create_profile_session(request: Request):
     print(f"  sourceAuthType: {state.source_auth_type}")
 
     session_info = state.session
-
-    print("[PlayerCredentials]")
-    print(f"  userId           : {state.player_credentials.user_id}")
-    print(f"  nameOnPlatform   : {state.player_credentials.name_on_platform}")
-    print(f"  acceptedOptIns   : {state.player_credentials.accepted_opt_ins}")
-    print(f"  expiration       : {state.player_credentials.expiration}")
-    print(f"  tokenWiiU        : {'present' if state.player_credentials.token_wiiu else 'empty'}")
-    print(f"  principalIdWiiU  : {'present' if state.player_credentials.principal_id_wiiu else 'empty'}")
-    print(f"  accountIdWiiU    : {'present' if state.player_credentials.account_id_wiiu else 'empty'}")
-    print(f"  ticket           : {'present' if state.player_credentials.ticket else 'empty'}")
-
-    print("[SessionAuth]")
-    print(f"  sourceAuthType: {state.source_auth_type}")
 
     response = session_info.to_dict()
 
@@ -217,7 +199,7 @@ async def create_profile_session(request: Request):
         },
     )
 
-# UbiServices: connection search
+
 @app.api_route(
     "/v2/connections",
     methods=["GET", "POST"],
@@ -273,7 +255,6 @@ async def connections(request: Request):
 
     return JSONResponse(response)
 
-# UbiServices: application configuration
 
 @app.api_route(
     "/applications/{application_id}/configuration",
@@ -312,10 +293,9 @@ async def application_configuration(
 
     return JSONResponse(response)
 
-# UbiServices: session lookup / extension
 
 @app.api_route(
-    "/profiles/sessions/{session_id}",
+    "/v2/profiles/sessions/{session_id}",
     methods=["GET", "POST", "PUT", "PATCH"],
 )
 async def profile_session(
@@ -339,7 +319,7 @@ async def profile_session(
         "Unknown JD2015 session",
         status_code=404,
     )
-# UbiServices: diagnostic endpoints for related requests
+
 
 @app.api_route(
     "/users",
@@ -374,7 +354,6 @@ async def policies(request: Request):
         status_code=501,
     )
 
-# Catch-all info
 
 @app.api_route(
     "/{path:path}",
@@ -404,8 +383,7 @@ async def catch_all(path: str, request: Request):
         },
         status_code=501,
     )
-    
-# Development WebSocket diagnostic endpoint
+
 
 @app.websocket("/{path:path}")
 async def websocket_diagnostic(websocket: WebSocket, path: str):
@@ -443,7 +421,6 @@ async def websocket_diagnostic(websocket: WebSocket, path: str):
     except WebSocketDisconnect:
         print("[WebSocket] Client disconnected")
 
-# Local development entry point
 
 if __name__ == "__main__":
     import ssl

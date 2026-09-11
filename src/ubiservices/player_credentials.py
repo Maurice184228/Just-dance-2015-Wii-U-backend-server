@@ -14,4 +14,4 @@ class PlayerCredentials:
     token: str
     name_on_platform: str
     accepted_opt_ins: bool
-    expiration: int
+    expiration: str
