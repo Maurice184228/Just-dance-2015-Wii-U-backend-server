@@ -331,7 +331,16 @@ async def application_configuration(
     print("[JobRequestConfig] Returning development configuration:")
     print(response)
 
-    return JSONResponse(response)
+    response_obj = JSONResponse(content=response)
+
+    print("[JobRequestConfig] Exact response body sent by FastAPI:")
+    print(response_obj.body.decode("utf-8"))
+    print(
+        f"[JobRequestConfig] Response body length: "
+        f"{len(response_obj.body)} bytes"
+    )
+
+    return response_obj
 
 @app.get("/v2/users/{user_id}")
 async def get_user(
