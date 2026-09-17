@@ -257,7 +257,7 @@ async def connections(request: Request):
 
 
 @app.api_route(
-    "/applications/{application_id}/configuration",
+    "/v1/applications/{application_id}/configuration",
     methods=["GET", "POST"],
 )
 async def application_configuration(
