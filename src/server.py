@@ -293,6 +293,28 @@ async def application_configuration(
 
     return JSONResponse(response)
 
+@app.get("/v2/users/{user_id}")
+async def get_user(
+    user_id: str,
+    request: Request,
+):
+    body = await request.body()
+    log_request(request, body)
+
+    print(
+        f"[GetUser] User requested: {user_id}"
+    )
+
+    response = {
+        "userId": user_id,
+        "nameOnPlatform": "DragonKing17",
+    }
+
+    print("[GetUser] Returning user:")
+    print(response)
+
+    return JSONResponse(response)
+
 
 @app.api_route(
     "/v2/profiles/sessions/{session_id}",
