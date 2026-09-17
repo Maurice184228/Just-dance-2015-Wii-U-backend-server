@@ -6,11 +6,11 @@ from typing import Optional
 from dnslib import DNSRecord, RR, A, QTYPE
 
 
-LISTEN_HOST = "10.0.0.165"
+LISTEN_HOST = "10.0.0.162"
 LISTEN_PORT = 53
 
 OVERRIDE_HOST = "api-ubiservices.ubi.com."
-OVERRIDE_IP = "10.0.0.165"
+OVERRIDE_IP = "10.0.0.162"
 
 UPSTREAM_DNS = [
     ("24.201.245.77", 53),
