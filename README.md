@@ -10,4 +10,4 @@ Currently this just dance 2015 backend server of Ubisoft is still under early st
 
 # Current progress status
 
-Since it's still under early stages of development it's about 10% done.
+Since it's still under early stages of development it's about 15% done.
