@@ -8140,3 +8140,404 @@ Headers:
   expect: 100-continue
 Body:
 {}
+
+======================================================================
+Timestamp: 2026-09-17T04:35:20.761300+00:00
+Method: POST
+Path: /v2/profiles/sessions
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: wiiu t=VjrvUQAFAAAQF5EAAAABoK2lDWYAAAGgsstpZugwq4b4rA1N7VBPaHlu4GLI9lJlMkFxAb/0zev+ekoz
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  content-length: 111
+Body:
+{"genomeId":"3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b","nameOnPlatform":"DragonKing17","idOnPlatform":"1446702929"}
+
+======================================================================
+Timestamp: 2026-09-17T04:35:21.212519+00:00
+Method: GET
+Path: /v1/applications/3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b/configuration
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=d4UTeWQhOPGT+YW1VQJurG68wRdmjKKUdA8hDzLCItA=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: 2feb8aff-2574-4b9e-a4bc-33c28bf3fa3c
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-17T04:35:21.983748+00:00
+Method: GET
+Path: /v2/users/d2cd8684-8e13-515d-bafd-f96a14a0bb24
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=d4UTeWQhOPGT+YW1VQJurG68wRdmjKKUdA8hDzLCItA=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: 2feb8aff-2574-4b9e-a4bc-33c28bf3fa3c
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-17T04:35:22.139936+00:00
+Method: DELETE
+Path: /v2/profiles/sessions
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=d4UTeWQhOPGT+YW1VQJurG68wRdmjKKUdA8hDzLCItA=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: 2feb8aff-2574-4b9e-a4bc-33c28bf3fa3c
+  content-length: 2
+  expect: 100-continue
+Body:
+{}
+
+======================================================================
+Timestamp: 2026-09-17T04:35:22.426726+00:00
+Method: POST
+Path: /v2/profiles/sessions
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: wiiu t=VjrvUQAFAAAQF5EAAAABoK2lDWYAAAGgsstpZugwq4b4rA1N7VBPaHlu4GLI9lJlMkFxAb/0zev+ekoz
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  content-length: 111
+Body:
+{"genomeId":"3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b","nameOnPlatform":"DragonKing17","idOnPlatform":"1446702929"}
+
+======================================================================
+Timestamp: 2026-09-17T04:35:22.891546+00:00
+Method: GET
+Path: /v1/applications/3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b/configuration
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=4xXihmdi4BtgWTMRYp04/EvmAlOoCEzmjZhnJ2EOXIg=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: ec2460bd-5380-412e-9f35-79fbd6bfc451
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-17T04:35:22.900956+00:00
+Method: GET
+Path: /v2/users/d2cd8684-8e13-515d-bafd-f96a14a0bb24
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=4xXihmdi4BtgWTMRYp04/EvmAlOoCEzmjZhnJ2EOXIg=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: ec2460bd-5380-412e-9f35-79fbd6bfc451
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-17T04:35:23.306373+00:00
+Method: GET
+Path: /v2/users/d2cd8684-8e13-515d-bafd-f96a14a0bb24
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=4xXihmdi4BtgWTMRYp04/EvmAlOoCEzmjZhnJ2EOXIg=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: ec2460bd-5380-412e-9f35-79fbd6bfc451
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-17T04:35:23.399202+00:00
+Method: DELETE
+Path: /v2/profiles/sessions
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=4xXihmdi4BtgWTMRYp04/EvmAlOoCEzmjZhnJ2EOXIg=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: ec2460bd-5380-412e-9f35-79fbd6bfc451
+  content-length: 2
+  expect: 100-continue
+Body:
+{}
+
+======================================================================
+Timestamp: 2026-09-17T04:35:23.794180+00:00
+Method: POST
+Path: /v2/profiles/sessions
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: wiiu t=VjrvUQAFAAAQF5EAAAABoK2lDWYAAAGgsstpZugwq4b4rA1N7VBPaHlu4GLI9lJlMkFxAb/0zev+ekoz
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  content-length: 111
+Body:
+{"genomeId":"3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b","nameOnPlatform":"DragonKing17","idOnPlatform":"1446702929"}
+
+======================================================================
+Timestamp: 2026-09-17T04:35:24.399251+00:00
+Method: GET
+Path: /v1/applications/3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b/configuration
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=qCIn5K1Hgzw1J6vFqn+5H61lYqoRs737ILmB20ZHJEg=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: 1944df6d-50e9-4ab8-9db7-322eac987b93
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-17T04:35:24.408365+00:00
+Method: GET
+Path: /v2/users/d2cd8684-8e13-515d-bafd-f96a14a0bb24
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=qCIn5K1Hgzw1J6vFqn+5H61lYqoRs737ILmB20ZHJEg=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: 1944df6d-50e9-4ab8-9db7-322eac987b93
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-17T04:35:24.782450+00:00
+Method: GET
+Path: /v2/users/d2cd8684-8e13-515d-bafd-f96a14a0bb24
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=qCIn5K1Hgzw1J6vFqn+5H61lYqoRs737ILmB20ZHJEg=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: 1944df6d-50e9-4ab8-9db7-322eac987b93
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-17T04:35:24.933634+00:00
+Method: DELETE
+Path: /v2/profiles/sessions
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=qCIn5K1Hgzw1J6vFqn+5H61lYqoRs737ILmB20ZHJEg=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: 1944df6d-50e9-4ab8-9db7-322eac987b93
+  content-length: 2
+  expect: 100-continue
+Body:
+{}
+
+======================================================================
+Timestamp: 2026-09-17T04:35:25.288587+00:00
+Method: POST
+Path: /v2/profiles/sessions
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: wiiu t=VjrvUQAFAAAQF5EAAAABoK2lDWYAAAGgsstpZugwq4b4rA1N7VBPaHlu4GLI9lJlMkFxAb/0zev+ekoz
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  content-length: 111
+Body:
+{"genomeId":"3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b","nameOnPlatform":"DragonKing17","idOnPlatform":"1446702929"}
+
+======================================================================
+Timestamp: 2026-09-17T04:35:25.882320+00:00
+Method: GET
+Path: /v1/applications/3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b/configuration
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=prdz7Jyp9cOFJXpcVFuK3PhSY2InayrDzuE70rrMxZM=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: c2095d7e-4ba0-4763-a573-1b452b577da3
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-17T04:35:25.895396+00:00
+Method: GET
+Path: /v2/users/d2cd8684-8e13-515d-bafd-f96a14a0bb24
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=prdz7Jyp9cOFJXpcVFuK3PhSY2InayrDzuE70rrMxZM=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: c2095d7e-4ba0-4763-a573-1b452b577da3
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-17T04:35:26.396850+00:00
+Method: GET
+Path: /v2/users/d2cd8684-8e13-515d-bafd-f96a14a0bb24
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=prdz7Jyp9cOFJXpcVFuK3PhSY2InayrDzuE70rrMxZM=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: c2095d7e-4ba0-4763-a573-1b452b577da3
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-17T04:35:26.471286+00:00
+Method: DELETE
+Path: /v2/profiles/sessions
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=prdz7Jyp9cOFJXpcVFuK3PhSY2InayrDzuE70rrMxZM=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: c2095d7e-4ba0-4763-a573-1b452b577da3
+  content-length: 2
+  expect: 100-continue
+Body:
+{}
+
+======================================================================
+Timestamp: 2026-09-17T04:35:35.927966+00:00
+Method: POST
+Path: /v2/profiles/sessions
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: wiiu t=VjrvUQAFAAAQF5EAAAABoK2lDWYAAAGgsstpZugwq4b4rA1N7VBPaHlu4GLI9lJlMkFxAb/0zev+ekoz
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  content-length: 111
+Body:
+{"genomeId":"3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b","nameOnPlatform":"DragonKing17","idOnPlatform":"1446702929"}
+
+======================================================================
+Timestamp: 2026-09-17T04:35:36.490983+00:00
+Method: GET
+Path: /v1/applications/3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b/configuration
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=20uwtBJK8MBNIQwYtcrB1SYkjkJqmq0iiRdhZsssles=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: c6cbc2c8-c0a2-4f72-9fa2-3b93b0b01bf1
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-17T04:35:37.020370+00:00
+Method: GET
+Path: /v2/users/d2cd8684-8e13-515d-bafd-f96a14a0bb24
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=20uwtBJK8MBNIQwYtcrB1SYkjkJqmq0iiRdhZsssles=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: c6cbc2c8-c0a2-4f72-9fa2-3b93b0b01bf1
+Body:
+<empty>
+
+======================================================================
+Timestamp: 2026-09-17T04:35:37.232883+00:00
+Method: DELETE
+Path: /v2/profiles/sessions
+Query: 
+Headers:
+  user-agent: UbiServices_SDK_HTTP_Client_2.1.5.123179_WIIU
+  host: api-ubiservices.ubi.com
+  accept: */*
+  authorization: Ubi_v1 t=20uwtBJK8MBNIQwYtcrB1SYkjkJqmq0iiRdhZsssles=
+  content-type: application/json
+  ubi-appbuildid: JD2015WIIU_E163180
+  ubi-appid: 3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b
+  ubi-sessionid: c6cbc2c8-c0a2-4f72-9fa2-3b93b0b01bf1
+  content-length: 2
+  expect: 100-continue
+Body:
+{}
