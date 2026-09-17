@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Any
 from uuid import uuid4
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 from src.ubiservices.configuration import build_configuration
 
@@ -198,6 +198,46 @@ async def create_profile_session(request: Request):
             "Ubi-SessionId": session_info.session_id,
         },
     )
+
+
+@app.delete("/v2/profiles/sessions")
+async def delete_profile_session(request: Request):
+    body = await request.body()
+    log_request(request, body)
+
+    session_id = request.headers.get("ubi-sessionid")
+
+    print("[JobDeleteSession]")
+    print(f"  ubi-sessionid: {session_id}")
+
+    if not session_id:
+        print("[JobDeleteSession] Missing ubi-sessionid")
+        return json_error("Missing ubi-sessionid", 400)
+
+    # Locate the session using the session ID.
+    state = session_service.find(session_id)
+
+    if state is None:
+        print("[JobDeleteSession] Session not found")
+        return Response(status_code=204)
+
+    # The POST route uses the authorization header as the key
+    # in session_service._sessions. DELETE gives us the session ID,
+    # so find the matching session and remove it.
+    removed = False
+
+    for auth_key, stored_state in list(session_service._sessions.items()):
+        if stored_state.session.session_id == session_id:
+            del session_service._sessions[auth_key]
+            removed = True
+            print("[JobDeleteSession] Session removed")
+            print(f"  sessionId: {session_id}")
+            break
+
+    if not removed:
+        print("[JobDeleteSession] Session existed but could not be removed")
+
+    return Response(status_code=204)
 
 
 @app.api_route(
