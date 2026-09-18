@@ -375,14 +375,27 @@ async def get_user(
     body = await request.body()
     log_request(request, body)
 
-    print(
-        f"[GetUser] User requested: {user_id}"
-    )
+    print(f"[GetUser] User requested: {user_id}")
 
-    response = {
-        "userId": user_id,
-        "nameOnPlatform": "DragonKing17",
-    }
+    session_id = request.headers.get("ubi-sessionid")
+    state = session_service.find(session_id) if session_id else None
+
+    if state is not None:
+        response = {
+            "userId": state.session.user_id,
+            "profileId": state.session.profile_id,
+            "platformType": state.session.platform_type,
+            "idOnPlatform": state.player_credentials.name_on_platform,
+            "nameOnPlatform": state.session.name_on_platform,
+        }
+    else:
+        response = {
+            "userId": user_id,
+            "profileId": "",
+            "platformType": "WiiU",
+            "idOnPlatform": "",
+            "nameOnPlatform": "DragonKing17",
+        }
 
     print("[GetUser] Returning user:")
     print(response)
@@ -398,7 +411,6 @@ async def get_user(
     )
 
     return response_obj
-
 
 @app.api_route(
     "/v2/profiles/sessions/{session_id}",

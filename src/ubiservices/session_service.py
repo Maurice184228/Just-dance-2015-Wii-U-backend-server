@@ -78,6 +78,7 @@ class SessionService:
             session_id=str(uuid4()),
             profile_id=profile_id,
             user_id=user_id,
+            id_on_platform=id_on_platform,
             space_id=space_id,
             environment="Prod",
             token=server_token,

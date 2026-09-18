@@ -9,6 +9,7 @@ class SessionInfo:
     session_id: str
     profile_id: str
     user_id: str
+    id_on_platform: str
     space_id: str
     environment: str
     token: str
