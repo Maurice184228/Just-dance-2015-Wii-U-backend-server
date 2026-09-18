@@ -320,40 +320,70 @@ async def application_configuration(
         "applicationBuildId": APP_BUILD_ID,
         "environment": "Prod",
 
-        "configuration": {},
-        "resources": {},
-        "sandboxes": {},
-        "uplayServices": {},
-        "sdkConfig": {},
-        "platformConfig": {
-            "platform": "WiiU",
+        "configuration": {
+            "custom": {
+                "resources": [],
+                "featuresSwitches": [],
+            },
+
+            "featuresSwitches": [
+                {
+                    "name": "Connection",
+                    "value": True,
+                }
+            ],
+
+            "gatewayResources": [
+                {
+                    "url": "https://api-ubiservices.ubi.com/{version}/profiles/connections",
+                    "name": "all_connections",
+                    "version": 1,
+                },
+                {
+                    "url": "https://api-ubiservices.ubi.com/{version}/profiles/{profileId}/connections",
+                    "name": "connections",
+                    "version": 1,
+                },
+                {
+                    "url": "wss://api-ubiservices.ubi.com/{version}/websocket",
+                    "name": "websocket/server",
+                    "version": 2,
+                },
+            ],
+
+            "storm": {},
+
+            "sdkConfig": {
+                "remoteLogs": {
+                    "ubiservicesLogLevel": "None",
+                    "prodLogLevel": "None",
+                },
+                "httpSafetySleepTime": 0,
+                "keepAliveTimeoutMin": 10,
+                "timeoutSec": 30,
+                "httpParam": {
+                    "timeoutParam": {
+                        "initialDelayMsec": 30000,
+                    },
+                },
+                "websocketParam": {
+                    "timeoutParam": {
+                        "initialDelayMsec": 30000,
+                    },
+                },
+            },
+
+            "platformConfig": {
+                "platform": "WiiU",
+                "applicationId": application_id,
+                "spaceId": "e137c118-3e14-553c-aa55-93282e686408",
+                "environment": "prod",
+            },
+
+                       "resources": [],
+            "uplayServices": [],
+            "legacyUrls": [],
         },
-        "legacyUrls": {},
-
-        "featuresSwitches": [
-            {
-                "name": "Connection",
-                "value": True,
-            }
-        ],
-
-        "gatewayResources": [
-            {
-                "url": "https://api-ubiservices.ubi.com/{version}/profiles/connections",
-                "name": "all_connections",
-                "version": 1,
-            },
-            {
-                "url": "https://api-ubiservices.ubi.com/{version}/profiles/{profileId}/connections",
-                "name": "connections",
-                "version": 1,
-            },
-            {
-                "url": "wss://api-ubiservices.ubi.com/{version}/websocket",
-                "name": "websocket/server",
-                "version": 2,
-            },
-        ],
     }
 
     print("[JobRequestConfig] Returning development configuration:")
@@ -369,6 +399,7 @@ async def application_configuration(
     )
 
     return response_obj
+
 
 @app.get("/v2/users/{user_id}")
 async def get_user(
