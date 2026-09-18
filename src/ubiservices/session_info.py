@@ -29,7 +29,6 @@ class SessionInfo:
             "expiration": self.expiration,
             "platformType": self.platform_type,
             "profileId": self.profile_id,
-            "productId": self.product_id,
             "userId": self.user_id,
             "nameOnPlatform": self.name_on_platform,
             "initializeUser": self.initialize_user,
