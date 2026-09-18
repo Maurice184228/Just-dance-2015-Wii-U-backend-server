@@ -239,7 +239,10 @@ async def delete_profile_session(request: Request):
 
     return Response(status_code=204)
 
-
+@app.api_route(
+    "/v1/profiles/connections",
+    methods=["GET", "POST"],
+)
 @app.api_route(
     "/v2/connections",
     methods=["GET", "POST"],
