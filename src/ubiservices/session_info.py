@@ -8,7 +8,6 @@ from typing import Any
 class SessionInfo:
     session_id: str
     profile_id: str
-    product_id: str
     user_id: str
     space_id: str
     environment: str

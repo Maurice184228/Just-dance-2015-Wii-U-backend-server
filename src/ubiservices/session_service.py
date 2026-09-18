@@ -77,7 +77,6 @@ class SessionService:
         session = SessionInfo(
             session_id=str(uuid4()),
             profile_id=profile_id,
-            product_id="BJDE41",
             user_id=user_id,
             space_id=space_id,
             environment="Prod",
