@@ -385,7 +385,7 @@ async def get_user(
             "userId": state.session.user_id,
             "profileId": state.session.profile_id,
             "platformType": state.session.platform_type,
-            "idOnPlatform": state.player_credentials.name_on_platform,
+            "idOnPlatform": state.session.id_on_platform,
             "nameOnPlatform": state.session.name_on_platform,
         }
     else:
