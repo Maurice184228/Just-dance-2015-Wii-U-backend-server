@@ -325,7 +325,9 @@ async def application_configuration(
             "platform": "WiiU",
         },
         "legacyUrls": {},
-        "featuresSwitches": {},
+        "featuresSwitches": {
+            "Connection": True,
+            },
     }
 
     print("[JobRequestConfig] Returning development configuration:")
