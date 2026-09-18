@@ -378,6 +378,7 @@ async def application_configuration(
                 "applicationId": application_id,
                 "spaceId": "e137c118-3e14-553c-aa55-93282e686408",
                 "environment": "prod",
+                "uplayGameCode": "JD2015",
             },
 
                        "resources": [],
