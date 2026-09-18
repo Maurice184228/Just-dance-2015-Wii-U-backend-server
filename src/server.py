@@ -313,42 +313,46 @@ async def application_configuration(
     )
 
     response = {
-        "applicationId": application_id,
-        "applicationBuildId": APP_BUILD_ID,
-        "environment": "Prod",
-        "configuration": {},
-        "resources": {},
-        "sandboxes": {},
-        "uplayServices": {},
-        "sdkConfig": {},
-        "platformConfig": {
-            "platform": "WiiU",
-        },
-        "legacyUrls": {},
-        "featuresSwitches": {
-             "name": "Connection",
-             "value": True,
-            },
-        "gatewayResources": [
-    {
-        "url": "https://api-ubiservices.ubi.com/{version}/profiles/connections",
-        "name": "all_connections",
-        "version": 1,
-    },
-    {
-        "url": "https://api-ubiservices.ubi.com/{version}/profiles/{profileId}/connections",
-        "name": "connections",
-        "version": 1,
-    },
-    {
-        "url": "wss://api-ubiservices.ubi.com/{version}/websocket",
-        "name": "websocket/server",
-        "version": 2,
-    },
-],
-    }
-    
+    "applicationId": application_id,
+    "applicationBuildId": APP_BUILD_ID,
+    "environment": "Prod",
 
+    "configuration": {
+        "featuresSwitches": [
+            {
+                "name": "Connection",
+                "value": True,
+            }
+        ],
+        "gatewayResources": [
+            {
+                "url": "https://api-ubiservices.ubi.com/{version}/profiles/connections",
+                "name": "all_connections",
+                "version": 1,
+            },
+            {
+                "url": "https://api-ubiservices.ubi.com/{version}/profiles/{profileId}/connections",
+                "name": "connections",
+                "version": 1,
+            },
+            {
+                "url": "wss://api-ubiservices.ubi.com/{version}/websocket",
+                "name": "websocket/server",
+                "version": 2,
+            },
+        ],
+    },
+
+    "resources": {},
+    "sandboxes": {},
+    "uplayServices": {},
+    "sdkConfig": {},
+    "platformConfig": {
+        "platform": "WiiU",
+    },
+    "legacyUrls": {},
+}
+    
     print("[JobRequestConfig] Returning development configuration:")
     print(response)
 
