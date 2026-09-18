@@ -313,17 +313,27 @@ async def application_configuration(
     )
 
     response = {
-    "applicationId": application_id,
-    "applicationBuildId": APP_BUILD_ID,
-    "environment": "Prod",
+        "applicationId": application_id,
+        "applicationBuildId": APP_BUILD_ID,
+        "environment": "Prod",
 
-    "configuration": {
+        "configuration": {},
+        "resources": {},
+        "sandboxes": {},
+        "uplayServices": {},
+        "sdkConfig": {},
+        "platformConfig": {
+            "platform": "WiiU",
+        },
+        "legacyUrls": {},
+
         "featuresSwitches": [
             {
                 "name": "Connection",
                 "value": True,
             }
         ],
+
         "gatewayResources": [
             {
                 "url": "https://api-ubiservices.ubi.com/{version}/profiles/connections",
@@ -341,18 +351,8 @@ async def application_configuration(
                 "version": 2,
             },
         ],
-    },
+    }
 
-    "resources": {},
-    "sandboxes": {},
-    "uplayServices": {},
-    "sdkConfig": {},
-    "platformConfig": {
-        "platform": "WiiU",
-    },
-    "legacyUrls": {},
-}
-    
     print("[JobRequestConfig] Returning development configuration:")
     print(response)
 
