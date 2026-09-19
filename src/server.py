@@ -123,7 +123,7 @@ async def create_profile_session(request: Request):
         return json_error("Missing CreateSession fields", 400)
 
     auth_key = request.headers.get("authorization", "")
-
+    
     requested_platform = request.headers.get(
         "ubi-requestedplatformtype"
     )
@@ -154,6 +154,18 @@ async def create_profile_session(request: Request):
         name_on_platform=str(name_on_platform),
         client_ip=request.client.host if request.client else None,
     )
+    nintendo_token = None
+
+    if auth_key.startswith("wiiu t="):
+        nintendo_token = auth_key[7:]
+
+    print("[WiiURDVCredentialDiagnostic]")
+    print(f"  wiiuAuthorizationPresent: {bool(auth_key)}")
+    print(f"  nintendoTokenPresent     : {bool(nintendo_token)}")
+    print(f"  nintendoTokenLength      : {len(nintendo_token) if nintendo_token else 0}")
+    print(f"  sessionTicketGenerated   : {bool(state.player_credentials.ticket)}")
+
+    print(f"  sessionId: {state.session.session_id}")
 
     print(f"  sessionId: {state.session.session_id}")
 
