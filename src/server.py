@@ -330,6 +330,9 @@ async def application_configuration(
                 {
                     "name": "Connection",
                     "value": True,
+                    
+                    "name": "Everything",
+                    "value": True,
                 }
             ],
 
