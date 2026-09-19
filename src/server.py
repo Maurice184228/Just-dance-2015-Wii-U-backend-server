@@ -171,6 +171,41 @@ async def create_profile_session(request: Request):
     print(f"  sourceAuthType: {state.source_auth_type}")
 
     session_info = state.session
+    print("[SessionValidityDiagnostic]")
+    print(f"  sessionId          = {session_info.session_id}")
+    print(f"  profileId          = {session_info.profile_id}")
+    print(f"  userId             = {session_info.user_id}")
+    print(f"  spaceId            = {session_info.space_id}")
+    print(f"  environment        = {session_info.environment}")
+    print(f"  platformType       = {session_info.platform_type}")
+    print(f"  initializeUser     = {session_info.initialize_user}")
+    print(f"  legalOptins        = {session_info.has_accepted_legal_optins}")
+    print(f"  token_present      = {bool(session_info.token)}")
+    print(f"  ticket_present     = {bool(session_info.ticket)}")
+    print(f"  expiration         = {session_info.expiration}")
+    print(f"  serverTime         = {session_info.server_time}")
+    print(f"  clientIp           = {session_info.client_ip}")
+    print(f"  accountIssues      = {session_info.account_issues}")
+
+    
+
+    session_info = state.session
+
+    print("[SessionValidityDiagnostic]")
+    print(f"  sessionId          = {session_info.session_id}")
+    print(f"  profileId          = {session_info.profile_id}")
+    print(f"  userId             = {session_info.user_id}")
+    print(f"  spaceId            = {session_info.space_id}")
+    print(f"  environment        = {session_info.environment}")
+    print(f"  platformType       = {session_info.platform_type}")
+    print(f"  initializeUser     = {session_info.initialize_user}")
+    print(f"  legalOptins        = {session_info.has_accepted_legal_optins}")
+    print(f"  token_present      = {bool(session_info.token)}")
+    print(f"  ticket_present     = {bool(session_info.ticket)}")
+    print(f"  expiration         = {session_info.expiration}")
+    print(f"  serverTime         = {session_info.server_time}")
+    print(f"  clientIp           = {session_info.client_ip}")
+    print(f"  accountIssues      = {session_info.account_issues}")
 
     response = session_info.to_dict()
 
