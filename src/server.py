@@ -327,14 +327,15 @@ async def application_configuration(
             },
 
             "featuresSwitches": [
-                {
-                    "name": "Connection",
-                    "value": True,
-                    
-                    "name": "Everything",
-                    "value": True,
-                }
-            ],
+    {
+        "name": "Connection",
+        "value": True,
+    },
+    {
+        "name": "Everything",
+        "value": True,
+    },
+],
 
             "gatewayResources": [
                 {
