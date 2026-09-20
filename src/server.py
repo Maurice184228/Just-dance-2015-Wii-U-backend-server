@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 
 from typing import Any
 from uuid import uuid4
@@ -61,6 +62,11 @@ app = FastAPI(title="Just Dance 2015 Wii U Backend")
 
 session_service = SessionService()
 connection_cache: dict[str, ConnectionInfo] = {}
+
+session_service = SessionService()
+connection_cache: dict[str, ConnectionInfo] = {}
+
+session_created_monotonic: dict[str, float] = {}
 
 
 APP_ID = "3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b"
@@ -147,12 +153,21 @@ async def create_profile_session(request: Request):
     print("[CreateSessionAttempt]")
     print(f"  existingSessionBeforeCreate: {existing_session}")
 
-    state = session_service.create_or_get(
-        auth_key,
-        genome_id=str(genome_id),
-        id_on_platform=str(id_on_platform),
-        name_on_platform=str(name_on_platform),
-        client_ip=request.client.host if request.client else None,
+    state = session_service.create_or_get
+    auth_key,
+    genome_id=str(genome_id),
+    id_on_platform=str(id_on_platform),
+    name_on_platform=str(name_on_platform),
+    client_ip=request.client.host if request.client else None,
+    session_id = state.session.session_id
+
+    if not existing_session:
+        session_created_monotonic[session_id] = time.monotonic()
+
+        print(
+            "[SessionTiming] Session created:"
+            f" {session_id}"
+            
     )
     nintendo_token = None
 
@@ -164,8 +179,6 @@ async def create_profile_session(request: Request):
     print(f"  nintendoTokenPresent     : {bool(nintendo_token)}")
     print(f"  nintendoTokenLength      : {len(nintendo_token) if nintendo_token else 0}")
     print(f"  sessionTicketGenerated   : {bool(state.player_credentials.ticket)}")
-
-    print(f"  sessionId: {state.session.session_id}")
 
     print(f"  sessionId: {state.session.session_id}")
 
@@ -183,26 +196,6 @@ async def create_profile_session(request: Request):
     print(f"  sourceAuthType: {state.source_auth_type}")
 
     session_info = state.session
-    print("[SessionValidityDiagnostic]")
-    print(f"  sessionId          = {session_info.session_id}")
-    print(f"  profileId          = {session_info.profile_id}")
-    print(f"  userId             = {session_info.user_id}")
-    print(f"  spaceId            = {session_info.space_id}")
-    print(f"  environment        = {session_info.environment}")
-    print(f"  platformType       = {session_info.platform_type}")
-    print(f"  initializeUser     = {session_info.initialize_user}")
-    print(f"  legalOptins        = {session_info.has_accepted_legal_optins}")
-    print(f"  token_present      = {bool(session_info.token)}")
-    print(f"  ticket_present     = {bool(session_info.ticket)}")
-    print(f"  expiration         = {session_info.expiration}")
-    print(f"  serverTime         = {session_info.server_time}")
-    print(f"  clientIp           = {session_info.client_ip}")
-    print(f"  accountIssues      = {session_info.account_issues}")
-
-    
-
-    session_info = state.session
-
     print("[SessionValidityDiagnostic]")
     print(f"  sessionId          = {session_info.session_id}")
     print(f"  profileId          = {session_info.profile_id}")
@@ -267,7 +260,19 @@ async def delete_profile_session(request: Request):
     if state is None:
         print("[JobDeleteSession] Session not found")
         return Response(status_code=204)
+    created_monotonic = session_created_monotonic.get(session_id)
 
+    if created_monotonic is not None:
+        age = time.monotonic() - created_monotonic
+
+        print(
+            f"[JobDeleteSession] Session age: "
+            f"{age:.3f} seconds"
+        )
+    else:
+        print(
+            "[JobDeleteSession] Session creation time unavailable"
+        )
     # The POST route uses the authorization header as the key
     # in session_service._sessions. DELETE gives us the session ID,
     # so find the matching session and remove it.
@@ -276,7 +281,10 @@ async def delete_profile_session(request: Request):
     for auth_key, stored_state in list(session_service._sessions.items()):
         if stored_state.session.session_id == session_id:
             del session_service._sessions[auth_key]
+            session_created_monotonic.pop(session_id, None)
+
             removed = True
+
             print("[JobDeleteSession] Session removed")
             print(f"  sessionId: {session_id}")
             break
