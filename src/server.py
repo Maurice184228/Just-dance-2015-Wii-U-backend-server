@@ -153,20 +153,21 @@ async def create_profile_session(request: Request):
     print("[CreateSessionAttempt]")
     print(f"  existingSessionBeforeCreate: {existing_session}")
 
-    state = session_service.create_or_get
+    state = session_service.create_or_get(
     auth_key,
     genome_id=str(genome_id),
     id_on_platform=str(id_on_platform),
     name_on_platform=str(name_on_platform),
     client_ip=request.client.host if request.client else None,
+)
     session_id = state.session.session_id
 
     if not existing_session:
         session_created_monotonic[session_id] = time.monotonic()
 
-        print(
-            "[SessionTiming] Session created:"
-            f" {session_id}"
+    print(
+        "[SessionTiming] Session created:"
+        f" {session_id}"
             
     )
     nintendo_token = None
