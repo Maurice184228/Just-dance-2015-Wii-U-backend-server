@@ -400,7 +400,7 @@ async def application_configuration(
                     "version": 1,
                 },
                 {
-                    "url": "https://api-ubiservices.ubi.com/{version}/profiles/{profileId}/connections",
+                   "url": "https://api-ubiservices.ubi.com/{version}/profiles/{profileId}/connections",
                     "name": "connections",
                     "version": 1,
                 },
