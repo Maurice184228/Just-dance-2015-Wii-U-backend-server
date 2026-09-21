@@ -8,6 +8,7 @@ from typing import Any
 class SessionInfo:
     session_id: str
     profile_id: str
+    product_id: str | None
     user_id: str
     id_on_platform: str
     space_id: str
@@ -30,6 +31,7 @@ class SessionInfo:
             "expiration": self.expiration,
             "platformType": self.platform_type,
             "profileId": self.profile_id,
+            "productId": self.product_id,
             "userId": self.user_id,
             "nameOnPlatform": self.name_on_platform,
             "initializeUser": self.initialize_user,
