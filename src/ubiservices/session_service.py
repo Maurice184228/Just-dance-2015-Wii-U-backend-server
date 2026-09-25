@@ -4,10 +4,11 @@ import base64
 import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from uuid import NAMESPACE_URL, uuid4, uuid5
+from uuid import uuid4
 
 from src.ubiservices.session_info import SessionInfo
 from src.ubiservices.player_credentials import PlayerCredentials
+from src.ubiservices.configuration import UBISOFT
 
 
 @dataclass
@@ -67,7 +68,7 @@ class SessionService:
                 f"ubiservices:user:{genome_id}:{id_on_platform}",
             )
         )
-        space_id = str(
+        space_id = space_id = UBISOFT.space_id(
             uuid5(
                 NAMESPACE_URL,
                 f"ubiservices:space:{genome_id}",
@@ -81,7 +82,7 @@ class SessionService:
             user_id=user_id,
             id_on_platform=id_on_platform,
             space_id=space_id,
-            environment="Prod",
+            environment=UBISOFT.environment,
             token=server_token,
             ticket=server_ticket,
             account_issues=None,

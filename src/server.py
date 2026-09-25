@@ -7,7 +7,10 @@ from uuid import uuid4
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse, Response
 
-from src.ubiservices.configuration import build_configuration
+from src.ubiservices.configuration import (
+    UBISOFT,
+    build_configuration,
+)
 
 
 from pathlib import Path
@@ -59,9 +62,6 @@ def save_request_log(
 
 
 app = FastAPI(title="Just Dance 2015 Wii U Backend")
-
-session_service = SessionService()
-connection_cache: dict[str, ConnectionInfo] = {}
 
 session_service = SessionService()
 connection_cache: dict[str, ConnectionInfo] = {}
@@ -367,87 +367,13 @@ async def application_configuration(
     log_request(request, body)
 
     print(
-        f"[JobRequestConfig] Configuration requested for application: "
-        f"{application_id}"
+        "[JobRequestConfig] Configuration requested for "
+        f"application: {application_id}"
     )
 
-    response = {
-        "applicationId": application_id,
-        "applicationBuildId": APP_BUILD_ID,
-        "environment": "Prod",
+    response = build_configuration(application_id)
 
-        "configuration": {
-            "custom": {
-                "resources": [],
-                "featuresSwitches": [],
-            },
-
-            "featuresSwitches": [
-    {
-        "name": "Connection",
-        "value": True,
-    },
-    {
-        "name": "Everything",
-        "value": True,
-    },
-],
-
-            "gatewayResources": [
-                {
-                    "url": "https://api-ubiservices.ubi.com/{version}/profiles/connections",
-                    "name": "all_connections",
-                    "version": 1,
-                },
-                {
-                   "url": "https://api-ubiservices.ubi.com/{version}/profiles/{profileId}/connections",
-                    "name": "connections",
-                    "version": 1,
-                },
-                {
-                    "url": "wss://api-ubiservices.ubi.com/{version}/websocket",
-                    "name": "websocket/server",
-                    "version": 2,
-                },
-            ],
-
-            "storm": {},
-
-            "sdkConfig": {
-                "remoteLogs": {
-                    "ubiservicesLogLevel": "None",
-                    "prodLogLevel": "None",
-                },
-                "httpSafetySleepTime": 0,
-                "keepAliveTimeoutMin": 10,
-                "timeoutSec": 30,
-                "httpParam": {
-                    "timeoutParam": {
-                        "initialDelayMsec": 30000,
-                    },
-                },
-                "websocketParam": {
-                    "timeoutParam": {
-                        "initialDelayMsec": 30000,
-                    },
-                },
-            },
-
-            "platformConfig": {
-                "platform": "WiiU",
-                "applicationId": application_id,
-                "spaceId": "e137c118-3e14-553c-aa55-93282e686408",
-                "environment": "prod",
-                "applicationBuildId": APP_BUILD_ID,
-            },
-
-                       "resources": [],
-            "uplayServices": [],
-            "legacyUrls": [],
-        },
-    }
-
-    print("[JobRequestConfig] Returning development configuration:")
+    print("[JobRequestConfig] Returning configuration:")
     print(response)
 
     response_obj = JSONResponse(content=response)
@@ -455,7 +381,7 @@ async def application_configuration(
     print("[JobRequestConfig] Exact response body sent by FastAPI:")
     print(response_obj.body.decode("utf-8"))
     print(
-        f"[JobRequestConfig] Response body length: "
+        "[JobRequestConfig] Response body length: "
         f"{len(response_obj.body)} bytes"
     )
 
