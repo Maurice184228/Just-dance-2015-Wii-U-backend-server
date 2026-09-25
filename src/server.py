@@ -3,7 +3,6 @@ from __future__ import annotations
 import time
 
 from typing import Any
-from uuid import uuid4
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse, Response
 
@@ -14,9 +13,7 @@ from src.ubiservices.configuration import (
 
 
 from pathlib import Path
-from datetime import datetime, timezone, timedelta
-
-from src.ubiservices.session_info import SessionInfo
+from datetime import datetime, timezone
 
 from src.ubiservices.connections import (
     ConnectionInfo,
@@ -67,13 +64,6 @@ session_service = SessionService()
 connection_cache: dict[str, ConnectionInfo] = {}
 
 session_created_monotonic: dict[str, float] = {}
-
-
-APP_ID = "3133a1ba-bf7b-443b-9e8a-f1d5f3b2ac7b"
-APP_BUILD_ID = "JD2015WIIU_E163180"
-ENVIRONMENT = "production"
-
-SPACE_ID = "jd2015"
 
 
 def log_request(

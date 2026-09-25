@@ -4,11 +4,11 @@ import base64
 import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from uuid import uuid4
+from uuid import NAMESPACE_URL, uuid4, uuid5
 
-from src.ubiservices.session_info import SessionInfo
-from src.ubiservices.player_credentials import PlayerCredentials
 from src.ubiservices.configuration import UBISOFT
+from src.ubiservices.player_credentials import PlayerCredentials
+from src.ubiservices.session_info import SessionInfo
 
 
 @dataclass
@@ -19,11 +19,15 @@ class ServerSession:
 
 
 def _ubi_datetime(value: datetime) -> str:
-    return value.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f0Z")
+    return value.astimezone(timezone.utc).strftime(
+        "%Y-%m-%dT%H:%M:%S.%f0Z"
+    )
 
 
 def _opaque_token(size: int) -> str:
-    return base64.b64encode(secrets.token_bytes(size)).decode("ascii")
+    return base64.b64encode(
+        secrets.token_bytes(size)
+    ).decode("ascii")
 
 
 class SessionService:
@@ -62,18 +66,15 @@ class SessionService:
                 f"ubiservices:profile:{genome_id}:{id_on_platform}",
             )
         )
+
         user_id = str(
             uuid5(
                 NAMESPACE_URL,
                 f"ubiservices:user:{genome_id}:{id_on_platform}",
             )
         )
-        space_id = space_id = UBISOFT.space_id(
-            uuid5(
-                NAMESPACE_URL,
-                f"ubiservices:space:{genome_id}",
-            )
-        )
+
+        space_id = UBISOFT.space_id
 
         session = SessionInfo(
             session_id=str(uuid4()),
